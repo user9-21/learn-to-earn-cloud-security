@@ -23,6 +23,10 @@ RESET=`tput sgr0`
 
 echo "${YELLOW}${BOLD} \t Starting Execution ${RESET}"
 
+gcloud services enable privateca.googleapis.com
+
+echo "${YELLOW}${BOLD} \tAPI Enabled${RESET}"
+
 gcloud config set privateca/location us-west1
 gcloud privateca pools create my-pool-1  --tier=devops
 gcloud privateca pools list
