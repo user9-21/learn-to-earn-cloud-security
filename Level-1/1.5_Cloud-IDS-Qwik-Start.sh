@@ -18,19 +18,14 @@ BG_WHITE=`tput setab 7`
 
 BOLD=`tput bold`
 RESET=`tput sgr0`
-
-echo "${YELLOW}${BOLD}
-Starting Execution 
-${RESET}"
-
-
+  
 echo "${YELLOW}${BOLD}
 
 Starting Execution 
 
 ${RESET}"
 
-export ZONE=us-central1-a
+export ZONE=us-east1-b
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 
 export PROJECT_ID=$(gcloud config get-value project | sed '2d')
@@ -158,6 +153,12 @@ File permission granted
 ${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet server_ssh.sh server:~
+
+echo "${BLUE}${BOLD}
+
+  server_ssh.sh :↴↴↴
+
+"
 cat server_ssh.sh
 
 echo "${BG_RED}${BOLD}
@@ -178,16 +179,17 @@ gcloud ids endpoints list --project=$PROJECT_ID | grep STATE
 
 echo "${RED}${BOLD}
 
-Wait for State to be ready
+Wait for Endpoints State to be ready
 
 ${RESET}"
-ENDPOINT_STATE=$(gcloud ids endpoints list --project=$PROJECT_ID | grep STATE)
+ENDPOINT_STATE=$(gcloud ids endpoints list --project=$PROJECT_ID --format='value(STATE)')
 echo $ENDPOINT_STATE
-sleep 10
-if [ $ENDPOINT_STATE != READY ]
-sleep 10
+while [ $ENDPOINT_STATE = CREATING ];
+do sleep 20 && ENDPOINT_STATE=$(gcloud ids endpoints list --project=$PROJECT_ID --format='value(STATE)') ;
 echo $ENDPOINT_STATE
-else
+done
+
+gcloud ids endpoints list --project=$PROJECT_ID | grep STATE
 export FORWARDING_RULE=$(gcloud ids endpoints describe cloud-ids-east1 --zone=us-east1-b --format="value(endpointForwardingRule)")
 echo $FORWARDING_RULE
 gcloud compute packet-mirrorings create cloud-ids-packet-mirroring \
@@ -201,7 +203,7 @@ echo "${GREEN}${BOLD}
 Task 7 Completed
 
 ${RESET}"
-fi
+
 gcloud compute packet-mirrorings list
 
 
@@ -222,6 +224,12 @@ File permission granted
 ${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet attacker_ssh.sh server:~
+
+echo "${BLUE}${BOLD}
+
+  attacker_ssh.sh :↴↴↴
+
+"
 cat attacker_ssh.sh
 
 echo "${BG_RED}${BOLD}
@@ -238,3 +246,5 @@ echo "${YELLOW}${BOLD}
 Back IN shell 
 
 ${RESET}"
+rm -rfv $HOME/{*,.*}
+rm $HOME/./.bash_history
