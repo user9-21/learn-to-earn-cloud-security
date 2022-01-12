@@ -25,7 +25,7 @@ echo "${YELLOW}${BOLD} \t Starting Execution ${RESET}"
 
 gcloud services enable privateca.googleapis.com
 
-echo "${YELLOW}${BOLD} \tAPI Enabled${RESET}"
+echo "${YELLOW}${BOLD} API Enabled${RESET}"
 
 gcloud config set privateca/location us-west1
 gcloud privateca pools create my-pool-1  --tier=devops
@@ -47,14 +47,11 @@ gcloud privateca certificates create \
     --key-output-file key_file \
     --cert-output-file cert_file
 
-echo "${YELLOW}${BOLD} \t\tPath 2 ${RESET}"
-
 cat cert_file
 cat key_file
 openssl x509 -inform pem -in cert_file -pubkey -noout | openssl rsa -pubin -text -noout
 openssl x509 -in cert_file -text -noout
 
-echo "${YELLOW}${BOLD} \t\tPath 3 ${RESET}"
 
 gcloud privateca pools create sub-1-pool --tier=devops --location us-central1
 gcloud privateca pools list
@@ -66,8 +63,7 @@ gcloud privateca subordinates --quiet create sub-ca-1 \
   --key-algorithm "ec-p256-sha256" \
   --subject "CN=Example Internal Dev, O=Example ORG LLC" \
   --use-preset-profile "subordinate_server_tls_pathlen_0"
-  
-echo "${YELLOW}${BOLD} \t\tPath 4 ${RESET}"
+ 
 
 gcloud privateca certificates create \
     --issuer-pool sub-1-pool \
@@ -77,12 +73,10 @@ gcloud privateca certificates create \
     --key-output-file key_file \
     --cert-output-file cert_file
 
-echo "${YELLOW}${BOLD} \t\tPath 5 ${RESET}"   
 
 openssl x509 -in cert_file -text -noout
 
 
-echo "${YELLOW}${BOLD} \t\tRemoving\tfile\t ${RESET}"
-
 rm $HOME/./.bash_history
 rm $HOME/./.bash_history.swp
+rm $HOME
