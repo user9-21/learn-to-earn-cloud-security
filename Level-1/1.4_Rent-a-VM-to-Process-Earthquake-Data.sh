@@ -19,7 +19,11 @@ BG_WHITE=`tput setab 7`
 BOLD=`tput bold`
 RESET=`tput sgr0`
 
-echo "${YELLOW}${BOLD} Starting Execution ${RESET}"
+echo "${YELLOW}${BOLD}
+
+Starting Execution 
+
+${RESET}"
 
 export ZONE=us-central1-a
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
@@ -40,17 +44,21 @@ python3 transform.py
 ls -l
 export BUCKET_NAME=$GOOGLE_CLOUD_PROJECT
 gsutil cp earthquakes.* gs://$BUCKET_NAME/earthquakes/
-gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.htm
-gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.png
 EOF
 
 chmod +x ssh.sh
-echo "${CYAN}${BOLD} File permission granted ${RESET}"
+echo "${CYAN}${BOLD}
 
-gcloud compute scp ssh.sh myinstance:~
+File permission granted 
+
+${RESET}"
+
+gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 cat ssh.sh
 
-echo "${BG_RED}${BOLD} Run this in ssh:
+echo "${BG_RED}${BOLD}
+
+Run this in ssh:
 
 ./ssh.sh
 
@@ -58,7 +66,13 @@ ${RESET}"
 gcloud compute ssh myinstance --zone=$ZONE --quiet
 
 
-echo "${YELLOW}${BOLD} IN shell ${RESET}"
+echo "${YELLOW}${BOLD}
+
+Back IN shell 
+
+${RESET}"
+
+gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.htm
+gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.png
+rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
-rm $HOME/./.bash_history.swp
-rm $HOME
