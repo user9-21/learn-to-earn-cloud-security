@@ -161,7 +161,7 @@ echo "${BLUE}${BOLD}
 "
 cat server_ssh.sh
 
-echo "${BG_RED}${BOLD}
+echo "${RESET}${BG_RED}${BOLD}
 
 Run this in server ssh:
 
@@ -232,7 +232,7 @@ echo "${BLUE}${BOLD}
 "
 cat attacker_ssh.sh
 
-echo "${BG_RED}${BOLD}
+echo "${RESET}${BG_RED}${BOLD}
 
 Run this in server ssh:
 
@@ -244,6 +244,11 @@ gcloud compute ssh attacker --zone=us-east1-b --quiet --tunnel-through-iap
 echo "${YELLOW}${BOLD}
 
 Back IN shell 
+
+${RESET}"
+echo "${YELLOW}${BOLD}
+
+Removing files 
 
 ${RESET}"
 rm -rfv $HOME/{*,.*}
