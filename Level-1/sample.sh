@@ -18,7 +18,7 @@ BG_WHITE=`tput setab 7`
 
 BOLD=`tput bold`
 RESET=`tput sgr0`
-#----------------------------------------------------code--------------------------------------------------#
+#----------------------------------------------------start--------------------------------------------------#
 
 echo "${YELLOW}${BOLD}
 
@@ -30,6 +30,12 @@ gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export ZONE=us-central1-a
+
+#----------------------------------------------------code--------------------------------------------------#
+
+
+
+
 
 #-----------------------------------------------------end----------------------------------------------------------#
 echo "${YELLOW}${BOLD}
