@@ -32,18 +32,22 @@ export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 #----------------------------------------------------code--------------------------------------------------#
-read -p "Your Cluster name:" CLUSTER_NAME
-read -p "Your Cloud SQL Instance:" SQL_INSTANCE
-read -p "Your Service Account:" SERVICE_ACCOUNT
-echo " "
-echo "Your Cluster name : $CLUSTER_NAME"
-echo "Your Cloud SQL Instance : $SQL_INSTANCE"
-echo "Your Service Account : $SERVICE_ACCOUNT"
+read -p "${BOLD}${YELLOW}Enter Cluster name:" CLUSTER_NAME
+read -p "Enter Cloud SQL Instance:" SQL_INSTANCE
+read -p "Enter Service Account:" SERVICE_ACCOUNT
+echo "
+${RESET} "
+echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME  "
+echo "$Your Cloud SQL Instance : $SQL_INSTANCE  "
+echo "$Your Service Account : $SERVICE_ACCOUNT  ${RESET}"
+echo ""
+#read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
+read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}"
+
 
 while [ $VERIFY_DETAILS = n ];
-do read -p "Your Cluster name:" CLUSTER_NAME && read -p "Your Cloud SQL Instance:" SQL_INSTANCE && read -p "Your Service Account:" SERVICE_ACCOUNT && echo "Your Cluster name : $CLUSTER_NAME" && echo "Your Cloud SQL Instance : $SQL_INSTANCE" && echo "Your Service Account : $SERVICE_ACCOUNT" && read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS ;
+do read -p "Enter Cluster name:" CLUSTER_NAME && read -p "Enter Cloud SQL Instance:" SQL_INSTANCE && read -p "Enter Service Account:" SERVICE_ACCOUNT && echo " " && echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME" && echo "Your Cloud SQL Instance : $SQL_INSTANCE" && echo "Your Service Account : $SERVICE_ACCOUNT${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}" ;
 done
 
 gsutil cp gs://spls/gsp335/gsp335.zip .
@@ -64,6 +68,18 @@ gcloud container clusters create $CLUSTER_NAME \
    --enable-network-policy
    
 gcloud sql instances create $SQL_INSTANCE --region us-central1
+
+
+read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}"
+while [ $VERIFY_SQL_INSTANCE = n ];
+do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}" ;
+done
+
+echo "${BOLD}${YELLOW}
+
+Create database 'wordpress' in sql instance manually here:- https://console.cloud.google.com/sql/instances/$SQL_INSTANCE/databases
+
+${RESET}"
 gcloud sql users create wordpress --instance $SQL_INSTANCE --host %
 
 gcloud iam service-accounts create $SERVICE_ACCOUNT
@@ -74,6 +90,7 @@ kubectl create secret generic cloudsql-instance-credentials --from-file key.json
 kubectl create secret generic cloudsql-db-credentials \
    --from-literal username=wordpress \
    --from-literal password=''
+   
 sed -i s#INSTANCE_CONNECTION_NAME#$DEVSHELL_PROJECT_ID:us-central1:$SQL_INSTANCE#g wordpress.yaml
 
 helm version
@@ -92,13 +109,27 @@ done
 read -p "Your DNS Record(from above command):" DNS_RECORD
 
 
-sed -i s#INSTANCE_CONNECTION_NAME#$EMAIL#g issuer.yaml
-sed -i s#INSTANCE_CONNECTION_NAME#$DNS_RECORD#g ingress.yaml
+sed -i "s#LAB_EMAIL_ADDRESS#$EMAIL#g" issuer.yaml
+sed -i "s#HOST_NAME#$DNS_RECORD#g" ingress.yaml
 
-curl -o network-policy.yaml 
+curl -o network-policy.yaml https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/files/network-policy.yaml
 kubectl apply -f network-policy.yaml
+gcloud services enable binaryauthorization.googleapis.com
+
+echo "GO Here and do manually- https://console.cloud.google.com/security/binary-authorization/start"
+echo "https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details"
+
+kubectl apply -f psp-restrictive.yaml
+kubectl apply -f psp-role.yaml
+kubectl apply -f psp-use.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
+read -p "Remove files?(y/n)" CONSENT_REMOVE
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "Remove files?(y/n)" CONSENT_REMOVE ;
+done
+
 echo "${YELLOW}${BOLD}
 
 Removing files 
