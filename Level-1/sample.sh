@@ -29,6 +29,7 @@ gcloud auth list
 gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 
 #----------------------------------------------------code--------------------------------------------------#
@@ -38,6 +39,12 @@ export ZONE=us-central1-a
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
 echo "${YELLOW}${BOLD}
 
 Removing files 
