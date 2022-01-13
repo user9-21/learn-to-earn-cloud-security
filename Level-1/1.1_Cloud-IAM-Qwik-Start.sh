@@ -28,17 +28,43 @@ export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 gsutil mb gs://$BUCKET_NAME/
 wget --output-document sample.txt https://www.cloudskillsboost.google/
 gsutil cp sample.txt gs://$BUCKET_NAME
-export PROJECT_ID=$(gcloud info --format='value(config.project)')
-export LASTUSER=$(sed -E 's/MEMBERS: //gm;t;d' <<< $(gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.members)' --filter="bindings.members:user:student*" |& tail -1))
-echo $LASTUSER 
-gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member $LASTUSER
 
+
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
+
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
+#export LASTUSER=$(sed -E 's/MEMBERS: //gm;t;d' <<< $(gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.members)' --filter="bindings.members:user:student*" |& tail -1))
+#echo $LASTUSER 
+echo " "
+read -p "${YELLOW}${BOLD}Enter second Email Address : " LASTUSER && echo "${RESET}"
+
+gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member $LASTUSER
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
 gcloud projects add-iam-policy-binding $PROJECT_ID --role='roles/storage.objectViewer' --member $LASTUSER
 
+echo "${GREEN}${BOLD}
+
+Task 3 Completed
+
+${RESET}"
+#-----------------------------------------------------end----------------------------------------------------------#
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
 echo "${YELLOW}${BOLD}
-
 Removing files 
-
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
