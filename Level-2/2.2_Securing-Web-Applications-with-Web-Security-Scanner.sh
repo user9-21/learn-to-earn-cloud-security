@@ -41,10 +41,9 @@ USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}
 
 git clone --branch vulnapp https://github.com/maoning/xss-challenge.git
 cd xss-challenge
+gcloud app create --region us-central
 gcloud app deploy --quiet
 gcloud app browse
-
-
 echo "${GREEN}${BOLD}
 
 Task 1 Completed
@@ -52,13 +51,24 @@ Task 1 Completed
 ${RESET}"
 
 
+echo "
+Create and run the scan
 
-
+Visit :- https://console.cloud.google.com/appengine/securityscan
+"
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
 
 ${RESET}"
+
+sed -i "s#{% autoescape false %}#{% autoescape true %}#g" templates/submitted.html
+
+gcloud app deploy --quiet
+
+
+
+
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
