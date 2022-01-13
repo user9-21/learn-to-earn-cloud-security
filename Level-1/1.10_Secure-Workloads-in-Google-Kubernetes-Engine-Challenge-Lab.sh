@@ -91,7 +91,7 @@ kubectl create secret generic cloudsql-db-credentials \
    --from-literal username=wordpress \
    --from-literal password=''
    
-sed -i s#INSTANCE_CONNECTION_NAME#$DEVSHELL_PROJECT_ID:us-central1:$SQL_INSTANCE#g wordpress.yaml
+sed -i "s#INSTANCE_CONNECTION_NAME#$DEVSHELL_PROJECT_ID:us-central1:$SQL_INSTANCE#g" wordpress.yaml
 
 helm version
 helm repo add stable https://charts.helm.sh/stable
@@ -99,40 +99,62 @@ helm repo update
 helm install nginx-ingress stable/nginx-ingress --set rbac.create=true
 kubectl get service
 sleep 5
-read -p "External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED
+read -p "${YELLOW}${BOLD}External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}"
 
 while [ $EXTERNAL_IP_APPEARED = n ];
-do sleep 10 && kubectl get service && read -p "External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED ;
+do sleep 10 && kubectl get service && read -p "External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}" ;
 done
 
 . add_ip.sh  
-read -p "Your DNS Record(from above command):" DNS_RECORD
+read -p "${YELLOW}${BOLD}Your DNS Record(from above command):" DNS_RECORD  && echo "${RESET}"
+
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.16.0/cert-manager.yaml
+
+kubectl create clusterrolebinding cluster-admin-binding \
+   --clusterrole=cluster-admin \
+   --user=$(gcloud config get-value core/account)
 
 
 sed -i "s#LAB_EMAIL_ADDRESS#$EMAIL#g" issuer.yaml
 sed -i "s#HOST_NAME#$DNS_RECORD#g" ingress.yaml
-
 curl -o network-policy.yaml https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/files/network-policy.yaml
+kubectl apply -f issuer.yaml
+kubectl apply -f ingress.yaml
 kubectl apply -f network-policy.yaml
 gcloud services enable binaryauthorization.googleapis.com
 
 echo "${BOLD}${YELLOW}
 
-GO Here and do manually- https://console.cloud.google.com/security/binary-authorization/start"
+Visit here and Setup Binary Authorization manually- https://console.cloud.google.com/security/binary-authorization/start
 
-echo "
+  ==> In Default rule, Select Disallow all images: Blocks all images from deployment.
+  
+  ==> In Specific rules, Select 'GKE Cluster' as specific rule type.
+      Click Add Specipic rule, Type u in GKE Cluster resource ID box and select the option( format: 'location.cluster-id') and click Add.
+      
+  ==> In Images exempt from this policy section, Click Custom exemption rules and add the following :- 
+         docker.io/library/wordpress:latest
+         us.gcr.io/k8s-artifacts-prod/ingress-nginx/*
+         gcr.io/cloudsql-docker/*
+         quay.io/jetstack/*
+         
+   ==> Now Save Policy.
 
-https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details${RESET}"
+  "
+
+echo " Enable Binary authorization in security section of cluster - 
+
+         https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details${RESET}"
 
 kubectl apply -f psp-restrictive.yaml
 kubectl apply -f psp-role.yaml
 kubectl apply -f psp-use.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "Remove files?(y/n)" CONSENT_REMOVE
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
 while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "Remove files?(y/n)" CONSENT_REMOVE ;
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
 echo "${YELLOW}${BOLD}
