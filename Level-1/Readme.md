@@ -68,7 +68,7 @@ chmod +x script.sh
 
 ## [10. Secure Workloads in Google Kubernetes Engine: Challenge Lab](https://www.cloudskillsboost.google/games/2265/labs/12934)
 ```
-curl -o script.sh https://github.com/user9-21/learn-to-earn-cloud-security/raw/main/Level-1/1.10_Secure-Workloads-in-Google-Kubernetes-Engine-Challenge-Lab.sh
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.10_Secure-Workloads-in-Google-Kubernetes-Engine-Challenge-Lab.sh
 chmod +x script.sh
 ./script.sh
 
