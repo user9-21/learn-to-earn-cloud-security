@@ -64,7 +64,7 @@ sleep 10
 
 tput bold; tput setaf 3 ;echo siege-vm  created; tput sgr0
 
-gcloud compute health-checks create http http-health-check --port 80
+gcloud compute health-checks create tcp http-health-check --port 80
 gcloud compute backend-services create http-backend --protocol=HTTP --port-name=http --health-checks=http-basic-check --global
 gcloud compute backend-services add-backend http-backend --instance-group=us-east1-mig --instance-group-region=us-east1  --balancing-mode=Rate --max-rate-per-instance=50 --global
 gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --global
