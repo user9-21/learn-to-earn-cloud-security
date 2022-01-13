@@ -32,10 +32,26 @@ export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 
+
+
+USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 
+echo "${GREEN}${BOLD}
 
+Task 1 Completed
+
+${RESET}"
+
+
+
+
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
