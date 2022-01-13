@@ -77,6 +77,14 @@ gcloud privateca certificates create \
 openssl x509 -in cert_file -text -noout
 
 
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
+echo "${YELLOW}${BOLD}
+Removing files 
+${RESET}"
+rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
-rm $HOME/./.bash_history.swp
-rm $HOME
