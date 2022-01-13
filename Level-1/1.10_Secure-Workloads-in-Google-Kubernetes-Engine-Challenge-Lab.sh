@@ -32,22 +32,22 @@ export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 #----------------------------------------------------code--------------------------------------------------#
-read -p "${BOLD}${YELLOW}Enter Cluster name:" CLUSTER_NAME
-read -p "Enter Cloud SQL Instance:" SQL_INSTANCE
-read -p "Enter Service Account:" SERVICE_ACCOUNT
-echo "
-${RESET} "
-echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME  "
-echo "$Your Cloud SQL Instance : $SQL_INSTANCE  "
-echo "$Your Service Account : $SERVICE_ACCOUNT  ${RESET}"
-echo ""
+echo " "
+read -p "${BOLD}${YELLOW}Enter Cluster name :" CLUSTER_NAME
+read -p "Enter Cloud SQL Instance :" SQL_INSTANCE
+read -p "Enter Service Account :" SERVICE_ACCOUNT
+echo "${RESET} "
+echo "${BOLD}${CYAN}Your Cluster name :$CLUSTER_NAME  "
+echo "Your Cloud SQL Instance :$SQL_INSTANCE  "
+echo "Your Service Account :$SERVICE_ACCOUNT  ${RESET}"
+echo " "
 #read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}"
 
 
 while [ $VERIFY_DETAILS = n ];
-do read -p "Enter Cluster name:" CLUSTER_NAME && read -p "Enter Cloud SQL Instance:" SQL_INSTANCE && read -p "Enter Service Account:" SERVICE_ACCOUNT && echo " " && echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME" && echo "Your Cloud SQL Instance : $SQL_INSTANCE" && echo "Your Service Account : $SERVICE_ACCOUNT${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}" ;
+do read -p "${BOLD}${YELLOW}Enter Cluster name :" CLUSTER_NAME && read -p "Enter Cloud SQL Instance :" SQL_INSTANCE && read -p "Enter Service Account :" SERVICE_ACCOUNT && echo " " && echo "${BOLD}${CYAN}Your Cluster name :$CLUSTER_NAME" && echo "Your Cloud SQL Instance :$SQL_INSTANCE" && echo "Your Service Account :$SERVICE_ACCOUNT${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}" ;
 done
 
 gsutil cp gs://spls/gsp335/gsp335.zip .
@@ -55,7 +55,7 @@ unzip gsp335.zip
 
 echo "${BG_RED}${BOLD}
 
-while Cluster is creating, Run this in another(+) terminal
+while Cluster is creating, Run this in another(+) terminal it will also take some time
 
 
 gcloud sql instances create $SQL_INSTANCE --region us-central1
@@ -116,8 +116,13 @@ curl -o network-policy.yaml https://raw.githubusercontent.com/user9-21/learn-to-
 kubectl apply -f network-policy.yaml
 gcloud services enable binaryauthorization.googleapis.com
 
-echo "GO Here and do manually- https://console.cloud.google.com/security/binary-authorization/start"
-echo "https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details"
+echo "${BOLD}${YELLOW}
+
+GO Here and do manually- https://console.cloud.google.com/security/binary-authorization/start"
+
+echo "
+
+https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details${RESET}"
 
 kubectl apply -f psp-restrictive.yaml
 kubectl apply -f psp-role.yaml
