@@ -35,7 +35,7 @@ export ZONE=us-central1-a
 #----------------------------------------------------code--------------------------------------------------#
 
 BUCKET_NAME=$BUCKET_NAME_enron_corpus
-gsutil mb gs://${BUCKET_NAME}
+gsutil mb gs://$BUCKET_NAME
 gsutil cp gs://enron_emails/allen-p/inbox/1. .
 tail 1.
 gcloud services enable cloudkms.googleapis.com
@@ -62,7 +62,7 @@ curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locati
   -H "Content-Type:application/json" \
 | jq .plaintext -r | base64 -d
 
-gsutil cp 1.encrypted gs://${BUCKET_NAME}
+gsutil cp 1.encrypted gs://$BUCKET_NAME
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 gcloud kms keyrings add-iam-policy-binding $KEYRING_NAME \
     --location global \
@@ -83,14 +83,18 @@ for file in $FILES; do
     -H "Content-Type:application/json" \
   | jq .ciphertext -r > $file.encrypted
 done
-gsutil -m cp allen-p/inbox/*.encrypted gs://${BUCKET_NAME}/allen-p/inbox
+gsutil -m cp allen-p/inbox/*.encrypted gs://$BUCKET_NAME/allen-p/inbox
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
 echo "${YELLOW}${BOLD}
-
 Removing files 
-
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
