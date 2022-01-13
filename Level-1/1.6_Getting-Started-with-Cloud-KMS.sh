@@ -34,8 +34,14 @@ export ZONE=us-central1-a
 
 #----------------------------------------------------code--------------------------------------------------#
 
-BUCKET_NAME=$BUCKET_NAME_enron_corpus
+BUCKET_NAME=$(echo $BUCKET_NAME)_enron_corpus
 gsutil mb gs://$BUCKET_NAME
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
 gsutil cp gs://enron_emails/allen-p/inbox/1. .
 tail 1.
 gcloud services enable cloudkms.googleapis.com
@@ -44,8 +50,14 @@ gcloud kms keyrings create $KEYRING_NAME --location global
 gcloud kms keys create $CRYPTOKEY_NAME --location global \
       --keyring $KEYRING_NAME \
       --purpose encryption
-      
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
+
 PLAINTEXT=$(cat 1. | base64 -w0)
+
 curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:encrypt" \
   -d "{\"plaintext\":\"$PLAINTEXT\"}" \
   -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
@@ -56,6 +68,7 @@ curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locati
   -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
   -H "Content-Type:application/json" \
 | jq .ciphertext -r > 1.encrypted
+
 curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:decrypt" \
   -d "{\"ciphertext\":\"$(cat 1.encrypted)\"}" \
   -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
@@ -63,7 +76,14 @@ curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locati
 | jq .plaintext -r | base64 -d
 
 gsutil cp 1.encrypted gs://$BUCKET_NAME
+echo "${GREEN}${BOLD}
+
+Task 3 Completed
+
+${RESET}"
+
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+
 gcloud kms keyrings add-iam-policy-binding $KEYRING_NAME \
     --location global \
     --member user:$USER_EMAIL \
@@ -73,6 +93,7 @@ gcloud kms keyrings add-iam-policy-binding $KEYRING_NAME \
     --member user:$USER_EMAIL \
     --role roles/cloudkms.cryptoKeyEncrypterDecrypter
 gsutil -m cp -r gs://enron_emails/allen-p .
+
 MYDIR=allen-p
 FILES=$(find $MYDIR -type f -not -name "*.encrypted")
 for file in $FILES; do
@@ -84,7 +105,11 @@ for file in $FILES; do
   | jq .ciphertext -r > $file.encrypted
 done
 gsutil -m cp allen-p/inbox/*.encrypted gs://$BUCKET_NAME/allen-p/inbox
+echo "${GREEN}${BOLD}
 
+Task 4 Completed
+
+${RESET}"
 
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
