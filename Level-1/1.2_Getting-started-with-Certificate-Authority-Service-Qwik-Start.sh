@@ -21,7 +21,11 @@ BOLD=`tput bold`
 RESET=`tput sgr0`
 
 
-echo "${YELLOW}${BOLD} \t Starting Execution ${RESET}"
+echo "${YELLOW}${BOLD} 
+
+Starting Execution
+
+${RESET}"
 
 gcloud services enable privateca.googleapis.com
 
