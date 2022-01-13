@@ -43,13 +43,13 @@ export PROJECT_ID=$(gcloud info --format='value(config.project)')
 echo " "
 read -p "${YELLOW}${BOLD}Enter second Email Address : " LASTUSER && echo "${RESET}"
 
-gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member $LASTUSER
+gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member user:$LASTUSER
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
 
 ${RESET}"
-gcloud projects add-iam-policy-binding $PROJECT_ID --role='roles/storage.objectViewer' --member $LASTUSER
+gcloud projects add-iam-policy-binding $PROJECT_ID --role='roles/storage.objectViewer' --member user:$LASTUSER
 
 echo "${GREEN}${BOLD}
 
