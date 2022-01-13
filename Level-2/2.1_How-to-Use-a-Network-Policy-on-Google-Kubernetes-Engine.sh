@@ -60,7 +60,11 @@ ${RESET}"
 cat > bastion_ssh.sh << EOF
 kubectl apply -f ./manifests/hello-app/
 kubectl get pods
+echo "${GREEN}${BOLD}
 
+Task 2 Completed
+
+${RESET}"
 kubectl apply -f ./manifests/network-policy.yaml
 
 kubectl delete -f ./manifests/network-policy.yaml
@@ -69,7 +73,7 @@ kubectl -n hello-apps apply -f ./manifests/hello-app/hello-client.yaml
 
 echo "${GREEN}${BOLD}
 
-Task 2 Completed
+Task 3 Completed
 
 ${RESET}"
 exit
@@ -84,7 +88,6 @@ ${RESET}"
 
 gcloud compute scp --quiet bastion_ssh.sh gke-demo-bastion:~
 
-cat bastion_ssh.sh
 
 echo "${BG_RED}${BOLD}
 
