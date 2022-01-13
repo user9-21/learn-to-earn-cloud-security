@@ -27,14 +27,26 @@ gcloud services enable privateca.googleapis.com
 
 echo "${YELLOW}${BOLD} API Enabled${RESET}"
 
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
 gcloud config set privateca/location us-west1
 gcloud privateca pools create my-pool-1  --tier=devops
 gcloud privateca pools list
 gcloud privateca roots create root-1 --pool my-pool-1  --subject "CN=example Internal, O=Example ORG LLC" --location us-west1 --quiet
 gcloud privateca roots list
+gcloud privateca roots enable root-1 --location us-west1 --pool my-pool-1
+gcloud privateca roots list
 
 
-echo "${YELLOW}${BOLD} \t\tPath 1 ${RESET}"
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
 
 sudo apt install build-essential libssl-dev libffi-dev python3-dev cargo
 pip3 install --upgrade pip
@@ -63,6 +75,12 @@ gcloud privateca subordinates --quiet create sub-ca-1 \
   --key-algorithm "ec-p256-sha256" \
   --subject "CN=Example Internal Dev, O=Example ORG LLC" \
   --use-preset-profile "subordinate_server_tls_pathlen_0"
+  
+echo "${GREEN}${BOLD}
+
+Task 3 Completed
+
+${RESET}"
  
 
 gcloud privateca certificates create \
