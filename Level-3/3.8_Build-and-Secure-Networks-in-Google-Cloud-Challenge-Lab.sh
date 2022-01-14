@@ -53,7 +53,7 @@ echo " "
 read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}"
 
 while [ $VERIFY_DETAILS = n ];
-do echo " " &&  read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : " IAP_NETWORK_TAG && read -p "Enter SSH internal network tag : " INTERNAL_NETWORK_TAG && read -p "Enter HTTP network tag : " HTTP_NETWORK_TAG && echo "${RESET} " && echo "${BOLD}${CYAN}Your SSH IAP network tag :$IAP_NETWORK_TAG  " && echo "Your SSH internal network tag :$INTERNAL_NETWORK_TAG  " && echo "Your HTTP network tag :$HTTP_NETWORK_TAG  ${RESET}" && echo " " ;
+do echo " " &&  read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : " IAP_NETWORK_TAG && read -p "Enter SSH internal network tag : " INTERNAL_NETWORK_TAG && read -p "Enter HTTP network tag : " HTTP_NETWORK_TAG && echo "${RESET} " && echo "${BOLD}${CYAN}Your SSH IAP network tag :$IAP_NETWORK_TAG  " && echo "Your SSH internal network tag :$INTERNAL_NETWORK_TAG  " && echo "Your HTTP network tag :$HTTP_NETWORK_TAG  ${RESET}" && echo " " && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}";
 done
 
 
