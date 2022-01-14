@@ -109,6 +109,7 @@ ${RESET}"
 echo "${BOLD}${YELLOW}
 
 In the Cloud Console go to Navigation menu > Kubernetes Engine > Clusters then open Kubernetes Clusters.
+(https://console.cloud.google.com/kubernetes/list/overview)
 
  - Right click on the three dots of the remote cluster, select Login
  - Fill out Log in to cluster form.
@@ -121,8 +122,9 @@ Add metadata for the remote cluster
 
  - Click remote cluster.
  - Click on the pen sign next to Labels to add a key and value and click ADD LABEL.
- - Add the key location, and a value of remote.
- - Add key env, and a value of prod.
+ - Add 
+      Key 1 : location        Value 1 : remote
+      Key 2 : env             Value 2 : prod
  - Click Save. The Labels have been updated, and your updates are shown.
 ${RESET}"
 
@@ -138,6 +140,61 @@ Task 4 Completed
 
 ${RESET}"
 
+
+
+gcloud container clusters get-credentials central --zone us-central1-b --project $DEVSHELL_PROJECT_ID
+curl -O https://storage.googleapis.com/qwiklabs-code/prisma_cloud_compute_edition_21_04_421.tar.gz
+mkdir prisma_cloud_compute_edition
+tar xvzf prisma_cloud_compute_edition_21_04_421.tar.gz -C prisma_cloud_compute_edition/
+cd prisma_cloud_compute_edition
+echo "${YELLOW}${BOLD}Enter token from the Qwiklabs start page under Student Resources to create the Prisma Cloud Compute console${RESET}"
+./linux/twistcli console export kubernetes --service-type LoadBalancer
+kubectl create -f twistlock_console.yaml
+echo "${BG_RED}${BOLD}
+
+Run this in another(+) terminal:
+
+kubectl get service -w -n twistlock
+
+${RESET}"
+
+
+echo "${YELLOW}${BOLD}Keep Trying above command until you see External IP.
+
+Once you see the EXTERNAL-IP use Ctrl+C to stop the wait flag and return to the command line.
+
+Copy the External IP address.
+
+Configure the Prisma Cloud Console by opening a new browser window and browsing to https://[EXTERNAL-IP]:8083.\
+
+
+ 
+ NOW DO MAnually from Qwiklabs start page .
+ 
+ PAste Defender install script in another terminal in order to successfully execute this script
+ # before executing kops command run this to configure kops environment
+ 'cd anthos-workshop
+ source ./common/connect-kops-remote.sh'
+
+${RESET}"
+
+read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}"
+
+while [ $CONSENT_PROCEED = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}" ;
+done
+
+export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
+NAME=remote.k8s.local
+kops export kubecfg ${NAME} --admin
+
+kubectl get services -A
+kubectx central
+kubectl get services -A
+
+export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
+NAME=remote.k8s.local
+kops export kubecfg ${NAME} --admin
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
