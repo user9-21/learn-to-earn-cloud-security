@@ -57,6 +57,7 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
+export PROJECT=$(gcloud config get-value project)
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
 kops export kubecfg ${NAME} --admin
@@ -66,12 +67,15 @@ KUBECOFIG= kubectl config view --minify --flatten --context=central > workdir/ce
 KUBECOFIG= kubectl config view --minify --flatten --context=remote.k8s.local > workdir/remote.context
 export PROJECT=$(gcloud config get-value project)
 export GKE_SA_CREDS=$WORK_DIR/anthos-connect-creds.json
+gcloud projects add-iam-policy-binding $PROJECT     --member="user:$EMAIL" --role="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT \
     --member="serviceAccount:$PROJECT@$PROJECT.iam.gserviceaccount.com" \
     --role="roles/gkehub.connect"
+# gcloud projects add-iam-policy-binding $PROJECT --member="serviceAccount:$PROJECT@$PROJECT.iam.gserviceaccount.com" --role="roles/storage.objectAdmin"
 gcloud iam service-accounts keys create $GKE_SA_CREDS \
   --iam-account=$PROJECT@$PROJECT.iam.gserviceaccount.com \
   --project=$PROJECT
+  
 export PROJECT=$(gcloud config get-value project)
 cd ~/anthos-workshop
 source ./common/connect-kops-remote.sh
@@ -81,7 +85,6 @@ export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
 kops export kubecfg ${NAME} --admin
 gcloud container hub memberships register remote  --context=remote.k8s.local  --service-account-key-file=$GKE_SA_CREDS  --kubeconfig=workdir/remote.context --project=$PROJECT
-
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
@@ -97,6 +100,7 @@ kubectl create clusterrolebinding ksa-admin-binding \
     --clusterrole cluster-admin \
     --serviceaccount default:$KSA
 printf "\n$(kubectl describe secret $KSA | sed -ne 's/^token: *//p')\n\n"
+
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
@@ -109,7 +113,7 @@ In the Cloud Console go to Navigation menu > Kubernetes Engine > Clusters then o
  - Right click on the three dots of the remote cluster, select Login
  - Fill out Log in to cluster form.
  - Select Token as the authentication method
- - Paste the token value copied from the previous step to the Token field
+ - Paste the token value copied from the previous step to the Token field(select the token output by carefully selecting the text, without capturing any trailing spaces)
  - Click Login
  
  
