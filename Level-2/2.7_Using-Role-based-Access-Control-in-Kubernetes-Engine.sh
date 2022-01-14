@@ -62,6 +62,23 @@ gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
 
 ${RESET}"
 
+read -p "${BOLD}${YELLOW}Done with above step?(y/n)" CONSENT_PROCEED && echo "${RESET}"
+
+while [ $CONSENT_PROCEED = n ];
+do sleep 5 && echo "${BOLD}${YELLOW}
+
+Open another(+) terminal and run this:
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
+${RESET}${BOLD}${YELLOW}
+Open one another(+) terminal and run this:${RESET}
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
+
+${RESET}" && read -p "${BOLD}${YELLOW}Done with above step?(y/n)"  CONSENT_PROCEED  && echo "${RESET}";
+done
+
+
 cat > owner_instance_ssh.sh << EOF
 kubectl create -n dev -f ./manifests/hello-server.yaml
 kubectl create -n prod -f ./manifests/hello-server.yaml
