@@ -39,12 +39,6 @@ export ZONE=us-central1-a
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #-------------------------------------------------code-------------------------------------------------# 
 
-echo "${YELLOW}${BOLD}
-
-Starting Execution 
-
-${RESET}"
-
 gsutil cp gs://spls/gsp499/user-authentication-with-iap.zip .
 unzip user-authentication-with-iap.zip
 cd user-authentication-with-iap
@@ -54,27 +48,37 @@ gcloud services enable iap.googleapis.com
 
 echo "${YELLOW}${BOLD}
 
-create iap from console
+create IAP from console
 
-Navigate here   -          https://console.cloud.google.com/security/iap
+Navigate here   -          https://console.cloud.google.com/security/iap?project=$PROJECT_ID
 
  Internal IAP
-  Name: IAP Example
-  Home page:YOUR_URL
-  Privacy page: YOUR_URL/Privacy
-  Email: LOGIN_EMAIL
+ 
+  Name         :  IAP Example
+  Home page    :  YOUR_URL
+  Privacy page :  YOUR_URL/Privacy
+  Email        :  LOGIN_EMAIL
   
+   
+ Click Save and Continue
 ${RESET}"
 gcloud app create --region "us-central"
 gcloud app deploy --quiet
 gcloud app browse
+
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
 
 YOUR_URL=$(gcloud app browse | grep 'https')
 echo "${YELLOW}${BOLD}
 
 create iap from console
 
-Navigate here   -          https://console.cloud.google.com/security/iap
+Navigate here   -          https://console.cloud.google.com/security/iap?project=$PROJECT_ID
 
  Internal IAP
  
@@ -83,6 +87,7 @@ Navigate here   -          https://console.cloud.google.com/security/iap
   Privacy page  :  $YOUR_URL/Privacy
   Email         :  $EMAIL
   
+ Click Save and Continue
 ${RESET}"
 
 tput bold; tput setaf 3 ;tput blink;echo  WAIT; tput sgr0
@@ -91,21 +96,40 @@ gcloud services disable appengineflex.googleapis.com
 EMAIL=$(gcloud config get-value account)
 gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --role roles/iap.httpsResourceAccessor --member user:$EMAIL
 
+echo "${YELLOW}${BOLD}
+
+https://console.cloud.google.com/security/iap?project=$PROJECT_ID
+
+Turn on IAP by sliding the switch next to App Engine app
+
+ - select App Engine app and click add Principal
+ - enter your email : $EMAIL
+ - select role      : IAP-Secured WEB app user 
+ - click Add
+${RESET}"
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
+
 
 cd ~/user-authentication-with-iap/2-HelloUser
 gcloud app deploy --quiet
+echo "${GREEN}${BOLD}
 
-echo "${YELLOW}${BOLD}
+Task 3 Completed
 
- - select IAP example and click add Principal
- - enter your email
- - select role - IAP-Secured WEB app user 
- - click Add
 ${RESET}"
 
 
 cd ~/user-authentication-with-iap/3-HelloVerifiedUser
 gcloud app deploy --quiet
+echo "${GREEN}${BOLD}
+
+Task 4 Completed
+
+${RESET}"
 
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
