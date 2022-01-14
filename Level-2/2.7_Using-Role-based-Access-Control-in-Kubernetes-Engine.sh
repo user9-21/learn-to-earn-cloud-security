@@ -50,6 +50,17 @@ gcloud iam service-accounts list
 gcloud compute instances list
 
 
+echo "${BOLD}${YELLOW}
+
+Open another(+) terminal and run this:
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
+${RESET}${BOLD}${YELLOW}
+Open one another(+) terminal and run this:${RESET}
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
+
+${RESET}"
 
 cat > owner_instance_ssh.sh << EOF
 kubectl create -n dev -f ./manifests/hello-server.yaml
@@ -68,23 +79,12 @@ EOF
 chmod +x owner_instance_ssh.sh
 echo "${CYAN}${BOLD}
 
+created owner_instance_ssh
 File permission granted to owner_instance_ssh
 
 ${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet owner_instance_ssh.sh  gke-tutorial-owner:~
-
-echo "${BG_RED}${BOLD}
-
-Run this in another(+) terminal:
-
-gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
-
-Run this in owner instance ssh:
-
-./owner_instance_ssh.sh
-
-${RESET}"
 
 
 cat > auditor_instance_ssh.sh << EOF
@@ -100,24 +100,13 @@ EOF
 chmod +x auditor_instance_ssh.sh
 echo "${CYAN}${BOLD}
 
+created auditor_instance_ssh
 File permission granted to auditor_instance_ssh
 
 ${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet auditor_instance_ssh.sh  gke-tutorial-auditor:~
 
-echo "${BG_RED}${BOLD}
-
-Run this in another(+) terminal:
-
-gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
-
-Run this in auditor instance ssh:
-
-./auditor_instance_ssh.sh
-
-
-${RESET}"
 
 
 cat > admin_instance_ssh.sh << EOF
@@ -172,6 +161,7 @@ EOF
 chmod +x admin_instance_ssh.sh
 echo "${CYAN}${BOLD}
 
+created admin_instance_ssh
 File permission granted to admin_instance_ssh
 
 ${RESET}"
@@ -186,6 +176,25 @@ Run this in ADMIN instance ssh:
 
 
 ${RESET}"
+
+echo "${BG_RED}${BOLD}
+
+Run this in OWNER instance ssh:
+
+./owner_instance_ssh.sh
+
+${RESET}"
+
+echo "${BG_RED}${BOLD}
+
+Run this in AUDITOR instance ssh:
+
+./auditor_instance_ssh.sh
+
+
+${RESET}"
+
+
 
 gcloud compute ssh gke-tutorial-admin --zone $ZONE --quiet
 make teardown
