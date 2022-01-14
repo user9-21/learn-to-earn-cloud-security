@@ -104,11 +104,25 @@ Task 5 Completed
 
 ${RESET}"
 
+echo "${BOLD}${YELLOW}
 
+If error in ssh , do it manually here - https://console.cloud.google.com/compute/instances
+
+1. ssh to bastion
+2. Now ssh to juice-shop from bastion
+
+
+Try this inside bastion instance ssh
+
+ssh <INTERNAL IP OF juice-shop>
+
+${RESET}"
+#gcloud compute ssh juice-shop --zone=us-central1-b  --internal-ip
 gcloud compute instances ssh bastion  --zone=us-central1-b --quiet
 
+
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
 while [ $CONSENT_REMOVE = n ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
