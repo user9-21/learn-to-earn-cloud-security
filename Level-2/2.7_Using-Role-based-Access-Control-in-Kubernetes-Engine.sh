@@ -48,16 +48,9 @@ Task 1 Completed
 ${RESET}"
 gcloud iam service-accounts list
 gcloud compute instances list
-gcloud compute ssh gke-tutorial-admin --zone $ZONE --quiet
-kubectl apply -f ./manifests/rbac.yaml
 
-echo "${GREEN}${BOLD}
 
-Task 2 Completed
 
-${RESET}"
-
-gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
 cat > owner_instance_ssh.sh << EOF
 kubectl create -n dev -f ./manifests/hello-server.yaml
 kubectl create -n prod -f ./manifests/hello-server.yaml
@@ -69,9 +62,31 @@ Task 3 Completed
 ${RESET}"
 
 kubectl get pods -l app=hello-server --all-namespaces
+exit  
 EOF
 
-gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
+chmod +x owner_instance_ssh.sh
+echo "${CYAN}${BOLD}
+
+File permission granted to owner_instance_ssh
+
+${RESET}"
+
+gcloud compute scp --zone=$ZONE --quiet owner_instance_ssh.sh  gke-tutorial-owner:~
+
+echo "${BG_RED}${BOLD}
+
+Run this in another(+) terminal:
+
+gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
+
+Run this in owner instance ssh:
+
+./owner_instance_ssh.sh
+
+${RESET}"
+
+
 cat > auditor_instance_ssh.sh << EOF
 kubectl get pods -l app=hello-server --all-namespaces
 kubectl get pods -l app=hello-server --namespace=dev
@@ -79,12 +94,49 @@ kubectl get pods -l app=hello-server --namespace=test
 kubectl get pods -l app=hello-server --namespace=prod
 kubectl create -n dev -f manifests/hello-server.yaml
 kubectl delete deployment -n dev -l app=hello-server
+exit
 EOF
 
+chmod +x auditor_instance_ssh.sh
+echo "${CYAN}${BOLD}
 
-gcloud compute ssh gke-tutorial-admin --zone $ZONE --quiet
+File permission granted to auditor_instance_ssh
+
+${RESET}"
+
+gcloud compute scp --zone=$ZONE --quiet auditor_instance_ssh.sh  gke-tutorial-auditor:~
+
+echo "${BG_RED}${BOLD}
+
+Run this in another(+) terminal:
+
+gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
+
+Run this in auditor instance ssh:
+
+./auditor_instance_ssh.sh
+
+
+${RESET}"
+
+
 cat > admin_instance_ssh.sh << EOF
+
+kubectl apply -f ./manifests/rbac.yaml
+
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
+
 kubectl apply -f manifests/pod-labeler.yaml
+
+echo "${GREEN}${BOLD}
+
+Task 4 Completed
+
+${RESET}"
 kubectl get pods -l app=pod-labeler
 kubectl describe pod -l app=pod-labeler | tail -n 20
 kubectl logs -l app=pod-labeler
@@ -92,22 +144,57 @@ kubectl get pod -oyaml -l app=pod-labeler
 kubectl apply -f manifests/pod-labeler-fix-1.yaml
 kubectl get deployment pod-labeler -oyaml
 
+echo "${GREEN}${BOLD}
+
+Task 5 Completed
+
+${RESET}"
+
 
 kubectl get pods -l app=pod-labeler
 kubectl logs -l app=pod-labeler
 kubectl get rolebinding pod-labeler -oyaml
 kubectl get role pod-labeler -oyaml
 kubectl apply -f manifests/pod-labeler-fix-2.yaml
+echo "${GREEN}${BOLD}
 
+Task 6 Completed
+
+${RESET}"
 
 kubectl get role pod-labeler -oyaml
 kubectl delete pod -l app=pod-labeler
 kubectl get pods --show-labels
 kubectl logs -l app=pod-labeler
+exit
 EOF
 
+chmod +x admin_instance_ssh.sh
+echo "${CYAN}${BOLD}
+
+File permission granted to admin_instance_ssh
+
+${RESET}"
+
+gcloud compute scp --zone=$ZONE --quiet admin_instance_ssh.sh  gke-tutorial-admin:~
+
+echo "${BG_RED}${BOLD}
+
+Run this in ADMIN instance ssh:
+
+./admin_instance_ssh.sh
+
+
+${RESET}"
+
+gcloud compute ssh gke-tutorial-admin --zone $ZONE --quiet
 make teardown
 
+echo "${GREEN}${BOLD}
+
+Task 7 Completed
+
+${RESET}"
 
 
 
