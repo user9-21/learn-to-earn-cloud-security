@@ -44,6 +44,8 @@ python3 transform.py
 ls -l
 export BUCKET_NAME=$GOOGLE_CLOUD_PROJECT
 gsutil cp earthquakes.* gs://$BUCKET_NAME/earthquakes/
+exit
+
 EOF
 
 chmod +x ssh.sh
@@ -54,7 +56,6 @@ File permission granted
 ${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
-cat ssh.sh
 
 echo "${BG_RED}${BOLD}
 
@@ -74,5 +75,15 @@ ${RESET}"
 
 gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.htm
 gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.png
+
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
+echo "${YELLOW}${BOLD}
+Removing files 
+${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
