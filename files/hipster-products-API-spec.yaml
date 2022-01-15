@@ -3,7 +3,7 @@ info:
   title: Hipster Products API
   version: "1"
   description: Products API for Hipster Application
-host: <<your API hostname>>
+host: eval.cloudlearning.com
 basePath:
   /v1/hipster-products-api
 schemes:
