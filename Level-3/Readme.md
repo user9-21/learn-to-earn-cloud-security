@@ -32,7 +32,10 @@ chmod +x script.sh
 
 ## [5. Prisma Cloud and XSOAR - Automate Incident Response Reverse Shell](https://www.cloudskillsboost.google/games/2267/labs/12955)
 ```
-Coming Soon ...
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-3/3.5_Prisma-Cloud-and-XSOAR-Automate-Incident-Response-Reverse-Shell.sh
+chmod +x script.sh
+./script.sh
+
 ```
 
 ## [6. Multiple VPC Networks](https://www.cloudskillsboost.google/games/2267/labs/12956)
