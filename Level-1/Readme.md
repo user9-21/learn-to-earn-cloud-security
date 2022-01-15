@@ -15,8 +15,15 @@ chmod +x script.sh
 ```
 
 ## [3. Apigee API Management Fundamentals](https://www.cloudskillsboost.google/games/2265/labs/12927)
+
+#### Run this in RDP COMMAND PROMPT
 ```
-Do it Manually
+cd Desktop
+curl -o hipster-products-backend-spec.yaml https://storage.googleapis.com/apigeexlabs/apijam-lab1/hipster-products-backend-spec.yaml
+curl -o Hipster-Products-API_With_CORS_Config.zip https://storage.googleapis.com/apigeexlabs/apijam-lab1/Hipster-Products-API_With_CORS_Config.zip
+curl -o hipster-products-API-spec.yaml https://storage.googleapis.com/apigeexlabs/apijam-lab1/hipster-products-API-spec.yaml
+curl -o HipsterAPIProductImage.png https://storage.googleapis.com/apigeexlabs/apijam-lab1/HipsterAPIProductImage.png
+
 
 ```
 
