@@ -103,10 +103,23 @@ echo "${GREEN}${BOLD}
 Task 5 Completed
 
 ${RESET}"
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
+export PROJECT_NUMBER=$(gcloud projects list --filter="PROJECT_ID: $PROJECT_ID" | grep PROJECT_NUMBER |  awk '{print $2}')
+export INTERNAL_IP_JUICE_SHOP=$(gcloud compute instances list --filter='name:juice-shop' --format='value(INTERNAL_IP)')
 
 echo "${BOLD}${YELLOW}
 
-If error in ssh , do it manually here - https://console.cloud.google.com/compute/instances
+SSH to bastion instance here( NOTE - may throw error) :
+${BOLD}${BG_RED}
+https://ssh.cloud.google.com/projects/$PROJECT_ID/zones/us-central1-b/instances/bastion?authuser=0&hl=en_US&projectNumber=$PROJECT_NUMBER&useAdminProxy=true&troubleshoot4005Enabled=true&troubleshoot255Enabled=true
+${RESET}${BOLD}${YELLOW}
+then SSH to juice-shop instance via bastion instance, RUN this(inside bastion instance ssh):
+${BOLD}${BG_RED}
+ssh $INTERNAL_IP_JUICE_SHOP
+${RESET}${BOLD}${YELLOW}
+
+
+If error appeared in above step , do ssh manually here - https://console.cloud.google.com/compute/instances
 
 1. ssh to bastion
 2. Now ssh to juice-shop from bastion
@@ -118,8 +131,18 @@ ssh <INTERNAL IP OF juice-shop>
 
 ${RESET}"
 #gcloud compute ssh juice-shop --zone=us-central1-b  --internal-ip
-gcloud compute instances ssh bastion  --zone=us-central1-b --quiet
+#gcloud compute instances ssh bastion  --zone=us-central1-b --quiet
+read -p "${BOLD}${YELLOW}Done with above step? (y/n) : ${RESET}" DONE_SSH 
 
+while [ $DONE_SSH != 'y' ] ;
+do sleep 20 &&  read -p "${BOLD}${YELLOW}Done with above step? (y/n) : ${RESET}" DONE_SSH ;
+done
+
+echo "${GREEN}${BOLD}
+
+Task 6 Completed
+
+${RESET}"
 
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
