@@ -37,15 +37,23 @@ Coming Soon ...
 
 ## [6. Multiple VPC Networks](https://www.cloudskillsboost.google/games/2267/labs/12956)
 ```
-  Coming Soon ...
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-3/3.6_Multiple-VPC-Networks.sh
+chmod +x script.sh
+./script.sh
+
 ```
 
 ## [7. Hardening Default GKE Cluster Configurations](https://www.cloudskillsboost.google/games/2267/labs/12957)
 ```
-Coming Soon ...
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-3/3.7_Hardening-Default-GKE-Cluster-Configurations.sh
+chmod +x script.sh
+./script.sh
+
 ```
 
 ## [8. Build and Secure Networks in Google Cloud: Challenge Lab](https://www.cloudskillsboost.google/games/2267/labs/12958)
 ```
-Coming Soon ...
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-3/3.8_Build-and-Secure-Networks-in-Google-Cloud-Challenge-Lab.sh
+chmod +x script.sh
+./script.sh
 ```
