@@ -41,14 +41,45 @@ cd prisma_cloud_compute_edition
 ./linux/twistcli console export kubernetes --service-type LoadBalancer
 #token
 kubectl create -f twistlock_console.yaml
+
+
+echo "${BG_RED}${BOLD}
+
+Run this in another(+) terminal to get the  External IP (keep retrying until External IP Appears). 
+
 kubectl get service -w -n twistlock
 
+${RESET}"
+echo "${BOLD}${YELLOW}
+EXTERNAL IP Appeared ?
+
+Go to ${CYAN}https://[YOUR-EXTERNAL-IP]:8083${RESET}${BOLD}${YELLOW}
+
+and do manually as instructed from Qwiklabs start page
+
+${RESET}"
+
+
+read -p "${BOLD}${YELLOW}Done with Manual step?(y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
+
+while [ $DONE_WITH_MANUAL = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step?(y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
+done
 
 git clone https://github.com/PaloAltoNetworks/prisma_cloud; cd prisma_cloud
 kubectl create namespace sock-shop
 kubectl apply -f sock-shop.yaml
 kubectl get pods -o wide -n sock-shop
 kubectl get service -n sock-shop
+
+echo "${BG_YELLOW}${BOLD}
+
+keep trying until front-end External IP Appears(in another(+) terminal). 
+
+kubectl get service -n sock-shop
+
+${RESET}"
+
 
 cat > reverse.yaml << EOF
 apiVersion: v1
@@ -75,10 +106,14 @@ EOF
 kubectl create -f reverse.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
 echo "${YELLOW}${BOLD}
-
 Removing files 
-
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
