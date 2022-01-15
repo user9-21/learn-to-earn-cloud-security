@@ -62,20 +62,10 @@ gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
 
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}Done with above step?(y/n)" CONSENT_PROCEED && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with above step?(y/n) : ${RESET}" CONSENT_PROCEED
 
-while [ $CONSENT_PROCEED = n ];
-do sleep 5 && echo "${BOLD}${YELLOW}
-
-Open another(+) terminal and run this:
-${RESET}${BOLD}${BG_RED}
-gcloud compute ssh gke-tutorial-owner --zone $ZONE --quiet
-${RESET}${BOLD}${YELLOW}
-Open one another(+) terminal and run this:${RESET}
-${RESET}${BOLD}${BG_RED}
-gcloud compute ssh gke-tutorial-auditor --zone $ZONE --quiet
-
-${RESET}" && read -p "${BOLD}${YELLOW}Done with above step?(y/n)"  CONSENT_PROCEED  && echo "${RESET}";
+while [ $CONSENT_PROCEED != 'y' ];
+do sleep 5 && read -p "${BOLD}${YELLOW}Done with above step?(y/n) : ${RESET}" CONSENT_PROCEED ;
 done
 
 
@@ -90,7 +80,8 @@ Task 3 Completed
 ${RESET}"
 
 kubectl get pods -l app=hello-server --all-namespaces
-exit  
+exit
+
 EOF
 
 chmod +x owner_instance_ssh.sh
@@ -112,6 +103,7 @@ kubectl get pods -l app=hello-server --namespace=prod
 kubectl create -n dev -f manifests/hello-server.yaml
 kubectl delete deployment -n dev -l app=hello-server
 exit
+
 EOF
 
 chmod +x auditor_instance_ssh.sh
@@ -173,6 +165,8 @@ kubectl delete pod -l app=pod-labeler
 kubectl get pods --show-labels
 kubectl logs -l app=pod-labeler
 exit
+
+
 EOF
 
 chmod +x admin_instance_ssh.sh
@@ -214,6 +208,11 @@ ${RESET}"
 
 
 gcloud compute ssh gke-tutorial-admin --zone $ZONE --quiet
+echo "${YELLOW}${BOLD}
+
+Back in SHELL
+
+${RESET}"
 make teardown
 
 echo "${GREEN}${BOLD}
@@ -228,7 +227,7 @@ ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
