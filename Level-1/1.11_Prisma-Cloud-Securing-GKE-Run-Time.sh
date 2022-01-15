@@ -41,8 +41,9 @@ cd prisma_cloud_compute_edition
 ./linux/twistcli console export kubernetes --service-type LoadBalancer
 #token
 kubectl create -f twistlock_console.yaml
-
-
+kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
+TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}')
+echo $TWISTLOCK_EXTERNAL_IP
 echo "${BG_RED}${BOLD}
 
 Run this in another(+) terminal to get the  External IP (keep retrying until External IP Appears). 
@@ -50,10 +51,16 @@ Run this in another(+) terminal to get the  External IP (keep retrying until Ext
 kubectl get service -w -n twistlock
 
 ${RESET}"
-echo "${BOLD}${YELLOW}
-EXTERNAL IP Appeared ?
 
-Go to ${CYAN}https://[YOUR-EXTERNAL-IP]:8083${RESET}${BOLD}${YELLOW}
+read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}"
+
+while [ $TWISTLOCK_EXTERNAL_IP_APPEARED = n ];
+do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP && read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}" ;
+done
+
+echo "${BOLD}${YELLOW}
+
+Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW}
 
 and do manually as instructed from Qwiklabs start page
 
@@ -79,6 +86,18 @@ keep trying until front-end External IP Appears(in another(+) terminal).
 kubectl get service -n sock-shop
 
 ${RESET}"
+
+FRONTEND_EXTERNAL_IP=$(kubectl get service -n sock-shop | grep 'front-end' |  awk '{print $4}')
+echo $FRONTEND_EXTERNAL_IP
+
+
+while [ $FRONTEND_EXTERNAL_IP = <pending> ];
+do sleep 10 && FRONTEND_EXTERNAL_IP=$(kubectl get service -n sock-shop | grep 'front-end' |  awk '{print $4}') && echo $FRONTEND_EXTERNAL_IP ;
+done
+
+
+read -p "${BOLD}${YELLOW}front-end External IP Appeared?(y/n) : " FRONTEND_EXTERNAL_IP_APPEARED && echo "${RESET}"
+
 
 
 cat > reverse.yaml << EOF
