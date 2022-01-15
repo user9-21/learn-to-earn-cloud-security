@@ -46,16 +46,16 @@ TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-conso
 echo $TWISTLOCK_EXTERNAL_IP
 echo "${BG_RED}${BOLD}
 
-Run this in another(+) terminal to get the  External IP (keep retrying until External IP Appears).
+Run this in another(+) terminal to get the  External IP (wait until External IP Appears).
 
 kubectl get service -w -n twistlock
 
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}"
+#read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}"
 
-while [ $TWISTLOCK_EXTERNAL_IP_APPEARED = n ];
-do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP && read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}" ;
+while [ $TWISTLOCK_EXTERNAL_IP = '<pending>' ];
+do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP ;
 done
 
 echo "${BOLD}${YELLOW}
@@ -82,17 +82,7 @@ ${RESET}"
 read -p "${BOLD}${YELLOW}OPENED INSTANCES?(y/n) : " OPENED_INSTANCES && echo "${RESET}"
 
 while [ $OPENED_INSTANCES = n ];
-do sleep 5 && echo "${BOLD}${YELLOW}
-
-Open another(+) terminal and run this:
-${RESET}${BOLD}${BG_RED}
-gcloud compute ssh jenkins-vm --zone $ZONE --quiet
-${RESET}${BOLD}${YELLOW}
-Open one another(+) terminal and run this:${RESET}
-${RESET}${BOLD}${BG_RED}
-gcloud compute ssh juice-shop --zone $ZONE --quiet
-${RESET}"
- && read -p "${BOLD}${YELLOW}OPENED INSTANCES?(y/n) : " OPENED_INSTANCES && echo "${RESET}";
+do sleep 5 && echo "${BOLD}${YELLOW}Open another(+) terminal and run this:${RESET}${BOLD}${BG_RED}gcloud compute ssh jenkins-vm --zone $ZONE --quiet${RESET}${BOLD}${YELLOW}Open one another(+) terminal and run this:${RESET}${BOLD}${BG_RED}gcloud compute ssh juice-shop --zone $ZONE --quiet${RESET}" && read -p "${BOLD}${YELLOW}OPENED INSTANCES?(y/n) : " OPENED_INSTANCES && echo "${RESET}" ;
 done
 
 echo "${BOLD}${YELLOW}
@@ -103,7 +93,18 @@ Now Install DEfender in each instances  as instructed from Qwiklabs start page
 
 ${RESET}"
 
-gcloud compute ssh kali --zone $ZONE --quiet
+export EXTERNAL_IP_KALI=$(gcloud compute instances list --filter='name:kali' --format='value(EXTERNAL_IP)')
+
+echo "${BOLD}${CYAN}KALI EXTERNAL IP : $EXTERNAL_IP_KALI ${RESET}"
+
+echo "${BOLD}${YELLOW}
+
+USE Password 'kali' when asked in kali instance 
+
+${RESET}"
+
+ssh kali@$EXTERNAL_IP_KALI
+
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
