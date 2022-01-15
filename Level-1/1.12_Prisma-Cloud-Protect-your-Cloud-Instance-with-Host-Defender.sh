@@ -29,7 +29,7 @@ gcloud auth list
 gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
-export ZONE=us-central1-a
+export ZONE=us-central1-b
 
 #----------------------------------------------------code--------------------------------------------------#
 
@@ -41,16 +41,78 @@ cd prisma_cloud_compute_edition
 ./linux/twistcli console export kubernetes --service-type LoadBalancer
 #token
 kubectl create -f twistlock_console.yaml
+kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
+TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}')
+echo $TWISTLOCK_EXTERNAL_IP
+echo "${BG_RED}${BOLD}
+
+Run this in another(+) terminal to get the  External IP (keep retrying until External IP Appears).
+
 kubectl get service -w -n twistlock
 
-curl -sk -D - https://$EXTERNAL_IP:8083/api/v1/_ping
+${RESET}"
 
+read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}"
 
+while [ $TWISTLOCK_EXTERNAL_IP_APPEARED = n ];
+do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP && read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}" ;
+done
+
+echo "${BOLD}${YELLOW}
+
+Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW}
+
+and Install prisma Cloud Compute  as instructed from Qwiklabs start page
+
+${RESET}"
+
+sleep 5
+
+echo "${BOLD}${YELLOW}
+
+Open another(+) terminal and run this:
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh jenkins-vm --zone $ZONE --quiet
+${RESET}${BOLD}${YELLOW}
+Open one another(+) terminal and run this:${RESET}
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh juice-shop --zone $ZONE --quiet
+${RESET}"
+
+read -p "${BOLD}${YELLOW}OPENED INSTANCES?(y/n) : " OPENED_INSTANCES && echo "${RESET}"
+
+while [ $OPENED_INSTANCES = n ];
+do sleep 5 && echo "${BOLD}${YELLOW}
+
+Open another(+) terminal and run this:
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh jenkins-vm --zone $ZONE --quiet
+${RESET}${BOLD}${YELLOW}
+Open one another(+) terminal and run this:${RESET}
+${RESET}${BOLD}${BG_RED}
+gcloud compute ssh juice-shop --zone $ZONE --quiet
+${RESET}"
+ && read -p "${BOLD}${YELLOW}OPENED INSTANCES?(y/n) : " OPENED_INSTANCES && echo "${RESET}";
+done
+
+echo "${BOLD}${YELLOW}
+
+Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW}
+
+Now Install DEfender in each instances  as instructed from Qwiklabs start page
+
+${RESET}"
+
+gcloud compute ssh kali --zone $ZONE --quiet
 #-----------------------------------------------------end----------------------------------------------------------#
+read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+
+while [ $CONSENT_REMOVE = n ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+done
+
 echo "${YELLOW}${BOLD}
-
 Removing files 
-
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
