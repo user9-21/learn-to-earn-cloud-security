@@ -40,9 +40,9 @@ USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}
 #----------------------------------------------------code--------------------------------------------------#
 
 echo " "
-read -p "${BOLD}${YELLOW}Enter Custom Securiy Role :" CUSTOM_SECURITY_ROLE
-read -p "Enter Service Account :" SERVICE_ACCOUNT
-read -p "Enter Cluster name :" CLUSTER_NAME
+read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : " CUSTOM_SECURITY_ROLE
+read -p "Enter Service Account : " SERVICE_ACCOUNT
+read -p "Enter Cluster name : " CLUSTER_NAME
 echo "${RESET} "
 echo "${BOLD}${CYAN}Your Custom Securiy Role :$CUSTOM_SECURITY_ROLE  "
 echo "Your Service Account :$SERVICE_ACCOUNT "
@@ -53,8 +53,8 @@ echo " "
 read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}"
 
 
-while [ $VERIFY_DETAILS = n ];
-do read -p "${BOLD}${YELLOW}Enter Custom Securiy Role :" CUSTOM_SECURITY_ROLE && read -p "Enter Service Account :" SERVICE_ACCOUNT && read -p "Enter Cluster name :" CLUSTER_NAME &&  &&echo " " && echo "${BOLD}${CYAN}Your Custom Securiy Role :$CUSTOM_SECURITY_ROLE && echo "Your Service Account :$SERVICE_ACCOUNT" && echo "Your Cluster name :$CLUSTER_NAME${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n):" VERIFY_DETAILS && echo "${RESET}" ;
+while [ $VERIFY_DETAILS != 'y' ];
+do read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : " CUSTOM_SECURITY_ROLE && read -p "Enter Service Account : " SERVICE_ACCOUNT && read -p "Enter Cluster name : " CLUSTER_NAME && echo " " && echo "${BOLD}${CYAN}Your Custom Securiy Role : $CUSTOM_SECURITY_ROLE" && echo "Your Service Account : $SERVICE_ACCOUNT" && echo "Your Cluster name : $CLUSTER_NAME${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) : " VERIFY_DETAILS && echo "${RESET}" ;
 done
 
 
@@ -154,7 +154,7 @@ gcloud compute ssh orca-jumphost --zone $ZONE --quiet
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
