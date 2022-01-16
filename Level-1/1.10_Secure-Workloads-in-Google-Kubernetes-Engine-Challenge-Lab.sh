@@ -43,10 +43,10 @@ echo "Your Service Account : $SERVICE_ACCOUNT  ${RESET}"
 echo " "
 #read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) : " VERIFY_DETAILS && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Verify all details are correct? (y/n) : " VERIFY_DETAILS && echo "${RESET}"
 
 
-while [ $VERIFY_DETAILS = n ];
+while [ $VERIFY_DETAILS != 'y' ];
 do read -p "${BOLD}${YELLOW}Enter Cluster name : " CLUSTER_NAME && read -p "Enter Cloud SQL Instance : " SQL_INSTANCE && read -p "Enter Service Account : " SERVICE_ACCOUNT && echo " " && echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME" && echo "Your Cloud SQL Instance : $SQL_INSTANCE" && echo "Your Service Account : $SERVICE_ACCOUNT${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) : " VERIFY_DETAILS && echo "${RESET}" ;
 done
 
@@ -77,7 +77,7 @@ gcloud sql instances create $SQL_INSTANCE --region us-central1
 
 
 read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}"
-while [ $VERIFY_SQL_INSTANCE = n ];
+while [ $VERIFY_SQL_INSTANCE != 'y' ];
 do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}" ;
 done
 
@@ -90,7 +90,7 @@ gcloud sql users create wordpress --instance $SQL_INSTANCE --host %
 
 read -p "${BOLD}${YELLOW}Created Database 'wordpress' ?(y/n)" CREATE_DATABASE && echo "${RESET}"
 
-while [ $CREATE_DATABASE = n ];
+while [ $CREATE_DATABASE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Created Database 'wordpress' ?(y/n)" CREATE_DATABASE && echo "${RESET}";
 done
 
@@ -128,11 +128,12 @@ kubectl get service
 sleep 5
 read -p "${YELLOW}${BOLD}External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}"
 
-while [ $EXTERNAL_IP_APPEARED = n ];
+while [ $EXTERNAL_IP_APPEARED != 'y' ];
 do sleep 10 && kubectl get service && read -p "External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}" ;
 done
 
 . add_ip.sh  
+echo " "
 read -p "${YELLOW}${BOLD}Your DNS Record(from above command) : " DNS_RECORD  && echo "${RESET}"
 
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.16.0/cert-manager.yaml
@@ -197,7 +198,7 @@ kubectl apply -f psp-use.yaml
 
 read -p "${BOLD}${YELLOW}Done with Manual step?(y/n)" CONSENT_DONE && echo "${RESET}"
 
-while [ $CONSENT_DONE = n ];
+while [ $CONSENT_DONE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step?(y/n)" CONSENT_DONE && echo "${RESET}" ;
 done
 echo "${GREEN}${BOLD}
@@ -213,7 +214,7 @@ ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
