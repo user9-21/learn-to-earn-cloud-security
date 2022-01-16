@@ -41,21 +41,6 @@ git clone https://github.com/GoogleCloudPlatform/gke-network-policy-demo.git
 cd gke-network-policy-demo
 gcloud config set compute/region us-central1
 gcloud config set compute/zone us-central1-a
-make setup-project 
-cat terraform/terraform.tfvars
-sed -i 's/~> 2.17.0/~> 2.17.0/g' terraform/provider.tf
-make tf-apply
-
-
-gcloud container clusters describe gke-demo-cluster | grep  -A2 networkPolicy
-
-
-echo "${GREEN}${BOLD}
-
-Task 1 Completed
-
-${RESET}"
-
 
 cat > bastion_ssh.sh << EOF
 kubectl apply -f ./manifests/hello-app/
@@ -86,7 +71,34 @@ File permission granted
 
 ${RESET}"
 
-gcloud compute scp --quiet bastion_ssh.sh gke-demo-bastion:~
+
+make setup-project 
+
+
+
+
+
+cat terraform/terraform.tfvars
+
+sed -i 's/~> 2.17.0/~> 2.17.0/g' terraform/provider.tf
+
+make tf-apply
+
+
+
+gcloud container clusters describe gke-demo-cluster | grep  -A2 networkPolicy
+
+
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
+
+
+
+gcloud compute scp --quiet bastion_ssh.sh --zone ZONE gke-demo-bastion:~
 
 
 echo "${BG_RED}${BOLD}
