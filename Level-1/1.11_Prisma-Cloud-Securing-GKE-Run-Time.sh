@@ -52,12 +52,12 @@ kubectl get service -w -n twistlock
 
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}"
 
-while [ $TWISTLOCK_EXTERNAL_IP_APPEARED = n ];
-do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP && read -p "${BOLD}${YELLOW}twistlock-console External IP Appeared?(y/n) : " TWISTLOCK_EXTERNAL_IP_APPEARED && echo "${RESET}" ;
+while [ $TWISTLOCK_EXTERNAL_IP = '<pending>' ];
+do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP ;
 done
 
+kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
 echo "${BOLD}${YELLOW}
 
 Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW}
@@ -67,9 +67,9 @@ and do manually as instructed from Qwiklabs start page
 ${RESET}"
 
 
-read -p "${BOLD}${YELLOW}Done with Manual step?(y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with Manual step? (y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
 
-while [ $DONE_WITH_MANUAL = n ];
+while [ $DONE_WITH_MANUAL != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step?(y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
 done
 
@@ -91,12 +91,12 @@ FRONTEND_EXTERNAL_IP=$(kubectl get service -n sock-shop | grep 'front-end' |  aw
 echo $FRONTEND_EXTERNAL_IP
 
 
-while [ $FRONTEND_EXTERNAL_IP = <pending> ];
+while [ $FRONTEND_EXTERNAL_IP = '<pending>' ];
 do sleep 10 && FRONTEND_EXTERNAL_IP=$(kubectl get service -n sock-shop | grep 'front-end' |  awk '{print $4}') && echo $FRONTEND_EXTERNAL_IP ;
 done
 
 
-read -p "${BOLD}${YELLOW}front-end External IP Appeared?(y/n) : " FRONTEND_EXTERNAL_IP_APPEARED && echo "${RESET}"
+#read -p "${BOLD}${YELLOW}front-end External IP Appeared? (y/n) : " FRONTEND_EXTERNAL_IP_APPEARED && echo "${RESET}"
 
 
 
@@ -123,11 +123,12 @@ spec:
       type: Directory
 EOF
 kubectl create -f reverse.yaml
+kubectl create -f reverse.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
