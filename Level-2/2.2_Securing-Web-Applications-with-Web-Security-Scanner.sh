@@ -52,10 +52,14 @@ ${RESET}"
 
 
 echo "${BOLD}${YELLOW}
-Create and run the scan
+saVE and run the scan
 
-Visit :- https://console.cloud.google.com/appengine/securityscan?project=$PROJECT_ID
-"
+Visit :- https://console.cloud.google.com/security/web-scanner/scanConfigs/edit?project=$PROJECT_ID
+ 
+
+${RESET}"
+
+#https://console.cloud.google.com/appengine/securityscan?project=
 
 read -p "${BOLD}${YELLOW}Scan Completed? [y/n]: ${RESET}" SCAN_COMPLETED
 
