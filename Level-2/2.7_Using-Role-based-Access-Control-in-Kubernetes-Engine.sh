@@ -92,7 +92,6 @@ File permission granted to owner_instance_ssh
 
 ${RESET}"
 
-gcloud compute scp --zone=$ZONE --quiet owner_instance_ssh.sh  gke-tutorial-owner:~
 
 
 cat > auditor_instance_ssh.sh << EOF
@@ -114,7 +113,7 @@ File permission granted to auditor_instance_ssh
 
 ${RESET}"
 
-gcloud compute scp --zone=$ZONE --quiet auditor_instance_ssh.sh  gke-tutorial-auditor:~
+
 
 
 
@@ -177,6 +176,10 @@ File permission granted to admin_instance_ssh
 
 ${RESET}"
 
+gcloud compute scp --zone=$ZONE --quiet owner_instance_ssh.sh  gke-tutorial-owner:~
+
+gcloud compute scp --zone=$ZONE --quiet auditor_instance_ssh.sh  gke-tutorial-auditor:~
+
 gcloud compute scp --zone=$ZONE --quiet admin_instance_ssh.sh  gke-tutorial-admin:~
 
 echo "${BG_RED}${BOLD}
@@ -213,6 +216,7 @@ echo "${YELLOW}${BOLD}
 Back in SHELL
 
 ${RESET}"
+gcloud container clusters get-credentials rbac-demo-cluster --zone $ZONE --project $PROJECT_ID
 make teardown
 
 echo "${GREEN}${BOLD}
