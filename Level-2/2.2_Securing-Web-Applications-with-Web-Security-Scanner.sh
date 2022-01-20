@@ -51,11 +51,17 @@ Task 1 Completed
 ${RESET}"
 
 
-echo "
+echo "${BOLD}${YELLOW}
 Create and run the scan
 
-Visit :- https://console.cloud.google.com/appengine/securityscan
+Visit :- https://console.cloud.google.com/appengine/securityscan?project=$PROJECT_ID
 "
+
+read -p "${BOLD}${YELLOW}Scan Completed? [y/n]: ${RESET}" SCAN_COMPLETED
+
+while [ $SCAN_COMPLETED != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Scan Completed? [y/n]: ${RESET}" SCAN_COMPLETED ;
+done
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
@@ -72,9 +78,9 @@ gcloud app deploy --quiet
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
