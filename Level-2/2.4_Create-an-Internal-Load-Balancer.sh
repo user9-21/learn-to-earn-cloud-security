@@ -55,6 +55,15 @@ Task 1 Completed
 
 ${RESET}"
 
+echo "${YELLOW}${BOLD}
+
+ Configure load balancer properly in console
+ 
+    Navigate here - https://console.cloud.google.com/net-services/loadbalancing/internal/add?protocol=TCP&project=$PROJECT_ID
+    
+${RESET}"
+
+
 
 gcloud beta compute instance-templates create instance-template-1 --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-central1/subnetworks/subnet-a --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/ilb/startup.sh --maintenance-policy=MIGRATE --region=us-central1 --tags=lb-backend --boot-disk-device-name=instance-template-1
 gcloud beta compute instance-templates create instance-template-2 --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-central1/subnetworks/subnet-b --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/ilb/startup.sh --maintenance-policy=MIGRATE --region=us-central1 --tags=lb-backend --boot-disk-device-name=instance-template-2
@@ -88,19 +97,34 @@ echo "${YELLOW}${BOLD}
 
  Configure load balancer properly in console
  
-    Navigate here - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list ${RESET}"
+    Navigate here - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID
+    
+                                            OR  
+    
+    https://console.cloud.google.com/net-services/loadbalancing/internal/add?protocol=TCP&project=$PROJECT_ID
+    
+    
+   -  Under TCP Load Balancing, click on Start configuration.
+   -  For Internet facing or internal only, select Only between my VMs.
+   -  Click Continue.
+   -  For Name, type my-ilb.
+   -  For Region, select us-central1.
+   -  For Network, select my-internal-app.
+   
+   
+   
+Configure the Internal Load Balancer Properly as informed on lab page and your ${GREEN} Task 3 ${YELLOW} would be Completed.
 
 
-
-
+${RESET}"
 
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
