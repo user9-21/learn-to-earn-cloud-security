@@ -61,6 +61,7 @@ Task 1 Completed
 ${RESET}"
 
 
+source ./common/connect-kops-remote.sh
 export PROJECT=$(gcloud config get-value project)
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
