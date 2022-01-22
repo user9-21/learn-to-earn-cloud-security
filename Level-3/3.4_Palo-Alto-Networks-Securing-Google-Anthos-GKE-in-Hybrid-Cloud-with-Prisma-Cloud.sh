@@ -130,7 +130,7 @@ ${RESET}"
 
 read -p "${BOLD}${YELLOW}Done with above?(y/n)" CONSENT_PROCEED && echo "${RESET}"
 
-while [ $CONSENT_PROCEED = n ];
+while [ $CONSENT_PROCEED != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Done with above?(y/n)" CONSENT_PROCEED  && echo "${RESET}";
 done
 
@@ -150,29 +150,40 @@ cd prisma_cloud_compute_edition
 echo "${YELLOW}${BOLD}Enter token from the Qwiklabs start page under Student Resources to create the Prisma Cloud Compute console${RESET}"
 ./linux/twistcli console export kubernetes --service-type LoadBalancer
 kubectl create -f twistlock_console.yaml
-echo "${BG_RED}${BOLD}
-
-Run this in another(+) terminal:
-
+kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
+TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}')
+echo $TWISTLOCK_EXTERNAL_IP
+echo "${BOLD}${YELLOW}
+Run this in another(+) terminal to get the  External IP (wait until External IP Appears).
+${BG_RED}
 kubectl get service -w -n twistlock
 
 ${RESET}"
 
 
-echo "${YELLOW}${BOLD}Keep Trying above command until you see External IP.
+while [ $TWISTLOCK_EXTERNAL_IP = '<pending>' ];
+do sleep 10 && TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}') && echo $TWISTLOCK_EXTERNAL_IP ;
+done
 
-Once you see the EXTERNAL-IP use Ctrl+C to stop the wait flag and return to the command line.
+kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
 
-Copy the External IP address.
+echo "${BOLD}${YELLOW}
 
-Configure the Prisma Cloud Console by opening a new browser window and browsing to https://[EXTERNAL-IP]:8083.\
+Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW} and Install prisma Cloud Compute  as instructed from Qwiklabs start page
 
-
- 
- NOW DO MAnually from Qwiklabs start page .
  
  PAste Defender install script in another terminal in order to successfully execute this script
+
+${RESET}"
+
+sleep 50
+
+
+
+echo "${YELLOW}${BOLD}
+ 
  # before executing kops command run this to configure kops environment
+ 
  'cd anthos-workshop
  source ./common/connect-kops-remote.sh'
 
@@ -180,7 +191,7 @@ ${RESET}"
 
 read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}"
 
-while [ $CONSENT_PROCEED = n ];
+while [ $CONSENT_PROCEED != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}" ;
 done
 
@@ -198,7 +209,7 @@ kops export kubecfg ${NAME} --admin
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
