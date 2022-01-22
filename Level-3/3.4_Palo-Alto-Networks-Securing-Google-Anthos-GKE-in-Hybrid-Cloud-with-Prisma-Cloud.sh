@@ -71,7 +71,7 @@ KUBECOFIG= kubectl config view --minify --flatten --context=central > workdir/ce
 KUBECOFIG= kubectl config view --minify --flatten --context=remote.k8s.local > workdir/remote.context
 export PROJECT=$(gcloud config get-value project)
 export GKE_SA_CREDS=$WORK_DIR/anthos-connect-creds.json
-gcloud projects add-iam-policy-binding $PROJECT     --member="user:$EMAIL" --role="roles/storage.objectAdmin"
+#gcloud projects add-iam-policy-binding $PROJECT     --member="user:$EMAIL" --role="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT \
     --member="serviceAccount:$PROJECT@$PROJECT.iam.gserviceaccount.com" \
     --role="roles/gkehub.connect"
@@ -132,10 +132,10 @@ Add metadata for the remote cluster
  - Click Save. The Labels have been updated, and your updates are shown.
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}Done with above?(y/n)" CONSENT_PROCEED && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with above? [y/n] : ${RESET}" CONSENT_PROCEED 
 
 while [ $CONSENT_PROCEED != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Done with above?(y/n)" CONSENT_PROCEED  && echo "${RESET}";
+do sleep 20 && read -p "${BOLD}${YELLOW}Done with above? [y/n] : ${RESET}" CONSENT_PROCEED ;
 done
 
 echo "${GREEN}${BOLD}
@@ -201,10 +201,10 @@ kops export kubecfg ${NAME} --admin
 
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)? [y/n]: ${RESET}" CONSENT_PROCEED
 
 while [ $CONSENT_PROCEED != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)?(y/n)" CONSENT_PROCEED && echo "${RESET}" ;
+do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)? (y/n): " CONSENT_PROCEED && echo "${RESET}" ;
 done
 
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
@@ -219,10 +219,10 @@ export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
 kops export kubecfg ${NAME} --admin
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
