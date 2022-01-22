@@ -96,6 +96,7 @@ Task 2 Completed
 
 ${RESET}"
 
+gcloud container hub memberships register remote  --context=remote.k8s.local  --service-account-key-file=$GKE_SA_CREDS  --kubeconfig=workdir/remote.context --project=$PROJECT
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
 kops export kubecfg ${NAME} --admin
@@ -202,11 +203,17 @@ kops export kubecfg ${NAME} --admin
 
 ${RESET}"
 
-read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)? [y/n]: ${RESET}" CONSENT_PROCEED
+read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder(TWICE AS GIVEN ON LAB PAGE)   )? [y/n]: ${RESET}" CONSENT_PROCEED
 
 while [ $CONSENT_PROCEED != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder)? (y/n): " CONSENT_PROCEED && echo "${RESET}" ;
+do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step(Install Prisma Cloud Compute, Defenfder(TWICE AS GIVEN ON LAB PAGE)   )? [y/n]: ${RESET}" CONSENT_PROCEED ;
 done
+
+echo "${GREEN}${BOLD}
+
+Task 5 Completed
+
+${RESET}"
 
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
@@ -216,9 +223,66 @@ kubectl get services -A
 kubectx central
 kubectl get services -A
 
+echo "${GREEN}${BOLD}
+
+Task 6 Completed
+
+${RESET}"
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
 kops export kubecfg ${NAME} --admin
+
+kubectl run att-machine --image=us.gcr.io/panw-gcp-team-testing/qwiklab/pcc-log4shell/att-machine:1.0 --command -- sleep 1d
+
+cat > att-svr.yaml << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: att-svr
+spec:
+  selector:
+    run: att-svr
+  clusterIP: None
+  ports:
+  - name: ldap
+    port: 1389
+    targetPort: 1389
+  - name: web
+    port: 8888
+    targetPort: 8888
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: att-svr
+  name: att-svr
+  namespace: default
+spec:
+  containers:
+  - image: us.gcr.io/panw-gcp-team-testing/qwiklab/pcc-log4shell/l4s-demo-svr:1.0
+    imagePullPolicy: IfNotPresent
+    name: att-svr
+    ports:
+    - containerPort: 8888
+      protocol: TCP
+      name: web
+    - containerPort: 1389
+      protocol: TCP
+      name: ldap
+EOF
+
+kubectl create -f att-svr.yaml
+kubectl run vul-app1 --image=us.gcr.io/panw-gcp-team-testing/qwiklab/pcc-log4shell/l4s-demo-app:1.0 --port=8080
+kubectl run vul-app2 --image=us.gcr.io/panw-gcp-team-testing/qwiklab/pcc-log4shell/l4s-demo-app:1.0 --port=8080
+kubectl get pod -o wide
+
+echo "${GREEN}${BOLD}
+
+Task 7 Completed
+
+${RESET}"
+
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
