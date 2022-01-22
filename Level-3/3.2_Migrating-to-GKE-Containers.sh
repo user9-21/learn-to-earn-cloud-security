@@ -61,8 +61,7 @@ cd gke-migration-to-containers/container
 sudo docker build -t gcr.io/migration-to-containers/prime-flask:1.0.2 .
 ps aux | grep 8080
 
-read -p "${BOLD}${YELLOW}Enter the first 'chronos' port number(from above command output) : " PORT_NUMBER 
-echo "${RESET}"
+read -p "${BOLD}${YELLOW}Enter the first 'chronos' port number(from above command output) : ${RESET}" PORT_NUMBER
 sudo kill -9 $PORT_NUMBER
 sudo docker run --rm -d --name=appuser -p 8080:8080 gcr.io/migration-to-containers/prime-flask:1.0.2
 ps aux
@@ -90,6 +89,16 @@ Run this in cos-vm ssh:
 ./cos_vm_ssh.sh
 
 ${RESET}"
+
+echo "${YELLOW}${BOLD}
+
+If permission denied in running script file in ssh , run manually the commands shown below
+
+${RESET}"
+
+echo "${CYAN}${BOLD}"
+cat cos_vm_ssh.sh
+echo "${RESET}"
 
 gcloud compute ssh cos-vm --zone us-central1-a --quiet
 
@@ -137,8 +146,8 @@ ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?[y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
