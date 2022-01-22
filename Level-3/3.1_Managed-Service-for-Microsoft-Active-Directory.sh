@@ -51,9 +51,9 @@ and create.
 
 ######### Do it Manually ###########
 ${RESET}"
-read -p "${BOLD}${YELLOW}DONE as mentioned above? (y/n) : " DONE && echo "${RESET}"
-while [ $DONE = n ];
-do sleep 5 && read -p "${BOLD}${YELLOW}DONE as mentioned above? (y/n) : " DONE && echo "${RESET}" ;
+read -p "${BOLD}${YELLOW}DONE as mentioned above? [y/n] : ${RESET}" PROCEED
+while [ $PROCEED != 'y' ];
+do sleep 5 && read -p "${BOLD}${YELLOW}DONE as mentioned above? [y/n] : ${RESET}" PROCEED ;
 done
 
 
@@ -78,9 +78,9 @@ Instance setup finished. instance-1 is ready to use.
 ------------------------------------------------------------
 
 ${RESET}"
-read -p "${BOLD}${YELLOW}Output came(as mentioned above)? (y/n) : " OUTPUT_TRUE && echo "${RESET}"
-while [ $OUTPUT_TRUE = n ];
-do sleep 20 && gcloud compute instances get-serial-port-output instance-1 --zone us-central1-a | grep "Instance setup finished" && read -p "${BOLD}${YELLOW}Output came(as mentioned above)? (y/n) : " OUTPUT_TRUE && echo "${RESET}" ;
+read -p "${BOLD}${YELLOW}Output came(as mentioned above)? [y/n] : ${RESET}" OUTPUT_TRUE
+while [ $OUTPUT_TRUE != 'y' ];
+do sleep 20 && gcloud compute instances get-serial-port-output instance-1 --zone us-central1-a | grep "Instance setup finished" && read -p "${BOLD}${YELLOW}Output came(as mentioned above)? [y/n] : ${RESET}" OUTPUT_TRUE ;
 done
 
 
@@ -90,7 +90,7 @@ gcloud compute reset-windows-password msad-1-ad-1 --zone us-central1-f --user ad
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
 done
 
