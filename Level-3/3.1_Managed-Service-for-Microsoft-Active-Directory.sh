@@ -56,8 +56,9 @@ while [ $PROCEED != 'y' ];
 do sleep 5 && read -p "${BOLD}${YELLOW}DONE as mentioned above? [y/n] : ${RESET}" PROCEED ;
 done
 
-
+sleep 10
 gcloud compute instances create instance-1 --project=$DEVSHELL_PROJECT_ID --zone=us-central1-a --machine-type=n1-standard-2 --network-interface=network-tier=PREMIUM,private-network-ip=10.0.0.3,subnet=msad-1-sub0  --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=msad-1-tcp-3389,http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=instance-1,image=projects/windows-cloud/global/images/windows-server-2019-dc-v20211216,mode=rw,size=50,type=projects/$DEVSHELL_PROJECT_ID/zones/us-central1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
+
 
 echo "${BOLD}${YELLOW}
 
