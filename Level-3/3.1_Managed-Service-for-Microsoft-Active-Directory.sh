@@ -61,9 +61,9 @@ gcloud compute instances create instance-1 --project=$DEVSHELL_PROJECT_ID --zone
 
 echo "${BOLD}${YELLOW}
 
-Allow HTTP Traffic & HTTPS Traffic by editing instance manually 
+Confirm HTTP Traffic & HTTPS Traffic are allowed, if not allow by editing instance manually 
 
-Here :- https://console.cloud.google.com/compute/instances 
+Here :- https://console.cloud.google.com/compute/instancesEdit/zones/us-central1-a/instances/instance-1?project=$DEVSHELL_PROJECT_ID
 
 ${RESET}"
 
@@ -80,7 +80,7 @@ Instance setup finished. instance-1 is ready to use.
 ${RESET}"
 read -p "${BOLD}${YELLOW}Output came(as mentioned above)? [y/n] : ${RESET}" OUTPUT_TRUE
 while [ $OUTPUT_TRUE != 'y' ];
-do sleep 20 && gcloud compute instances get-serial-port-output instance-1 --zone us-central1-a | grep "Instance setup finished" && read -p "${BOLD}${YELLOW}Output came(as mentioned above)? [y/n] : ${RESET}" OUTPUT_TRUE ;
+do sleep 10 && gcloud compute instances get-serial-port-output instance-1 --zone us-central1-a | grep "Instance setup finished" && read -p "${BOLD}${YELLOW}Output came(as mentioned above)? [y/n] : ${RESET}" OUTPUT_TRUE ;
 done
 
 
