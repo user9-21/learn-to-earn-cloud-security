@@ -46,7 +46,9 @@ gcloud services enable \
     gkehub.googleapis.com \
     serviceusage.googleapis.com \
     anthos.googleapis.com
-    
+
+gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectAdmin"
+gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectViewer"
 git clone -b workshop-v1 https://github.com/GoogleCloudPlatform/anthos-workshop.git anthos-workshop
 cd anthos-workshop
 source ./common/connect-kops-remote.sh
@@ -57,6 +59,8 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
+
+
 export PROJECT=$(gcloud config get-value project)
 export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
 NAME=remote.k8s.local
@@ -182,10 +186,18 @@ sleep 50
 
 echo "${YELLOW}${BOLD}
  
- # before executing kops command run this to configure kops environment
- 
- 'cd anthos-workshop
- source ./common/connect-kops-remote.sh'
+### before executing kops command run this to configure kops environment ###
+
+
+export PROJECT=$(gcloud config get-value project) 
+cd ~/anthos-workshop 
+source ./common/connect-kops-remote.sh 
+export GKE_SA_CREDS=$WORK_DIR/anthos-connect-creds.json 
+gcloud container clusters get-credentials central --zone us-central1-b --project $PROJECT 
+export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote 
+NAME=remote.k8s.local 
+kops export kubecfg ${NAME} --admin
+
 
 ${RESET}"
 
