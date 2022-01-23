@@ -35,7 +35,6 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
-gsutil mb gs://$BUCKET_NAME/
 cat > ssh.sh <<EOF
 sudo apt-get update
 sudo apt-get -y -qq install git
@@ -84,6 +83,7 @@ File permission granted
 
 ${RESET}"
 
+gsutil mb gs://$BUCKET_NAME/
 gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 
 echo "${BG_RED}${BOLD}
@@ -93,6 +93,7 @@ Run this in ssh:
 ./ssh.sh
 
 ${RESET}"
+gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 gcloud compute ssh myinstance --zone=$ZONE --quiet
 
 
@@ -105,10 +106,10 @@ ${RESET}"
 gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.htm
 gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.png
 
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
