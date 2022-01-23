@@ -71,19 +71,27 @@ ${RESET}"
 
 sleep 5
 
+if [[ ! -f ./twistcli || $(./twistcli --version) != *"21.04.421"* ]]; then curl --progress-bar -L -k --header "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk" https://$TWISTLOCK_EXTERNAL_IP:8083/api/v1/util/twistcli > twistcli; chmod +x twistcli; fi; ./twistcli defender install kubernetes --namespace twistlock --cri --monitor-service-accounts --token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk --address https://$TWISTLOCK_EXTERNAL_IP:8083 --cluster-address twistlock-console   
+
+sleep 10
+
+read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED 
+while [ $DEFENDER_INSTALLED != 'y' ];
+do sleep 20 && read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED ;
+done
+
+if [[ ! -f ./twistcli || $(./twistcli --version) != *"21.04.421"* ]]; then curl --progress-bar -L -k --header "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk" https://$TWISTLOCK_EXTERNAL_IP:8083/api/v1/util/twistcli > twistcli; chmod +x twistcli; fi; ./twistcli defender install kubernetes --namespace twistlock --cri --monitor-service-accounts --token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk --address https://$TWISTLOCK_EXTERNAL_IP:8083 --cluster-address twistlock-console
 
 export EXTERNAL_IP_XSOAR=$(gcloud compute instances list --filter='name:xsoar-pcc-62' --format='value(EXTERNAL_IP)')
 
-echo "${BOLD}${CYAN}xsoar-pcc-62 EXTERNAL IP : $EXTERNAL_IP_XSOAR ${RESET}"
+echo "${BOLD}${YELLOW}xsoar-pcc-62 EXTERNAL IP : ${CYAN}$EXTERNAL_IP_XSOAR ${RESET}"
 
 echo "${BOLD}${YELLOW}
 
-Go to ${CYAN}https://$EXTERNAL_IP_XSOAR${RESET}${BOLD}${YELLOW}
-
-Now Configure XSOAR  as instructed from Qwiklabs start page
+Go to ${CYAN}https://$EXTERNAL_IP_XSOAR${RESET}${BOLD}${YELLOW} and Configure XSOAR  as instructed from Qwiklabs start page
 
 ${RESET}"
-echo "${BOLD}${CYAN}YOUR Prisma Cloud EXTERNAL IP : $TWISTLOCK_EXTERNAL_IP${RESET}"
+echo "${BOLD}${YELLOW}YOUR Prisma Cloud EXTERNAL IP : ${CYAN}$TWISTLOCK_EXTERNAL_IP${RESET}"
 
 read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? (y/n) ${RESET}: " MANUAL_STEP_DONE 
 while [ $MANUAL_STEP_DONE != y ];
@@ -131,10 +139,10 @@ ncat $EXTERNAL_IP_HOST_C2 80 -e /bin/bash
 ${RESET}"
 gcloud compute ssh host-c2 --zone us-central1-a --quiet
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
