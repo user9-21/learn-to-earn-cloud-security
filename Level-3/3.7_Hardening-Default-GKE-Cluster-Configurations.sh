@@ -48,18 +48,26 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
+
+echo "${YELLOW}${BOLD}
+Run this in another(+) terminal:
+
+${BG_RED}
 kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
 curl -s http://metadata.google.internal/computeMetadata/v1/instance/name
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/name
-#kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
+kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/scopes
 exit
+
+${RESET}"
+
+read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
+
+while [ $PROCEED != 'y' ];
+do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
+done
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -91,8 +99,10 @@ echo "${GREEN}${BOLD}
 Task 2 Completed
 
 ${RESET}"
-kubectl exec -it hostpath -- bash
+echo "${YELLOW}${BOLD}
+Run this in another(+) terminal:
 
+${BG_RED}
 kubectl exec -it hostpath -- bash
 chroot /rootfs /bin/bash
 mount | grep volumes | awk '{print $3}' | xargs ls
@@ -100,6 +110,16 @@ mount | grep volumes | awk '{print $3}' | xargs ls
 docker ps
 exit
 exit
+
+${RESET}"
+
+read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
+
+while [ $PROCEED != 'y' ];
+do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
+done
+
+
 kubectl delete pod hostpath
 gcloud beta container node-pools create second-pool --cluster=simplecluster --zone=$MY_ZONE --num-nodes=1 --metadata=disable-legacy-endpoints=true --workload-metadata-from-node=SECURE
 echo "${GREEN}${BOLD}
@@ -107,18 +127,25 @@ echo "${GREEN}${BOLD}
 Task 3 Completed
 
 ${RESET}"
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
-kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
 
+echo "${YELLOW}${BOLD}
+Run this in another(+) terminal:
 
+${BG_RED}
 kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
 
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/name
 exit
+
+${RESET}"
+
+read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
+
+while [ $PROCEED != 'y' ];
+do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
+done
+
 
 kubectl create clusterrolebinding clusteradmin --clusterrole=cluster-admin --user="$(gcloud config list account --format 'value(core.account)')"
 cat <<EOF | kubectl apply -f -
