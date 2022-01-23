@@ -81,9 +81,9 @@ ${RESET}"
 
 sleep 10
 
-read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED 
+read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? [y/n] : ${RESET}" DEFENDER_INSTALLED 
 while [ $DEFENDER_INSTALLED != 'y' ];
-do sleep 8 && read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED ;
+do sleep 8 && read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? [y/n] ${RESET}: " DEFENDER_INSTALLED ;
 done
 
 echo "${BOLD}${GREEN}
@@ -92,6 +92,14 @@ Task 2 Completed
 ${RESET}"
 
 
+read -p "${BOLD}${GREEN}Game Completed.${YELLOW} Want to Exit the terminal ? [y/n] : ${RESET}" EXIT 
+if [ $EXIT = y ]
+then
+echo "${YELLOW}${BOLD}Removing files ${RESET}";
+rm -rfv $HOME/{*,.*};
+rm $HOME/./.bash_history;
+exit;
+fi
 
 
 export EXTERNAL_IP_XSOAR=$(gcloud compute instances list --filter='name:xsoar-pcc-62' --format='value(EXTERNAL_IP)')
@@ -105,9 +113,9 @@ Go to ${CYAN}https://$EXTERNAL_IP_XSOAR${RESET}${BOLD}${YELLOW} and Configure XS
 ${RESET}"
 echo "${BOLD}${YELLOW}YOUR Prisma Cloud EXTERNAL IP : ${CYAN}$TWISTLOCK_EXTERNAL_IP${RESET}"
 
-read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? (y/n) ${RESET}: " MANUAL_STEP_DONE 
+read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? [y/n] ${RESET}: " MANUAL_STEP_DONE 
 while [ $MANUAL_STEP_DONE != y ];
-do sleep 20 && read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? (y/n) ${RESET}: " MANUAL_STEP_DONE ;
+do sleep 20 && read -p "${BOLD}${YELLOW}DOne Manually till 'Real World Use Case: Reverse Shell' ? [y/n] ${RESET}: " MANUAL_STEP_DONE ;
 done
 
 
