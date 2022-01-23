@@ -40,6 +40,8 @@ USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}
 #----------------------------------------------------code--------------------------------------------------#
 
 
+gcloud container clusters get-credentials central --zone us-central1-b --project $DEVSHELL_PROJECT_ID
+
 gcloud services enable cloudresourcemanager.googleapis.com
 gcloud services enable container.googleapis.com
 gcloud services enable gkeconnect.googleapis.com
@@ -47,8 +49,16 @@ gcloud services enable gkehub.googleapis.com
 gcloud services enable serviceusage.googleapis.com
 gcloud services enable anthos.googleapis.com
 
+
 gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectViewer"
+gcloud services enable \
+    cloudresourcemanager.googleapis.com \
+    container.googleapis.com \
+    gkeconnect.googleapis.com \
+    gkehub.googleapis.com \
+    serviceusage.googleapis.com \
+    anthos.googleapis.com
 git clone -b workshop-v1 https://github.com/GoogleCloudPlatform/anthos-workshop.git anthos-workshop
 cd anthos-workshop
 source ./common/connect-kops-remote.sh
