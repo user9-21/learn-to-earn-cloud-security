@@ -40,20 +40,19 @@ USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}
 #----------------------------------------------------code--------------------------------------------------#
 
 echo " "
-read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : " IAP_NETWORK_TAG
-read -p "Enter SSH internal network tag : " INTERNAL_NETWORK_TAG
-read -p "Enter HTTP network tag : " HTTP_NETWORK_TAG
+read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : ${RESET}" IAP_NETWORK_TAG
+read -p "${BOLD}${YELLOW}Enter SSH internal network tag : ${RESET}" INTERNAL_NETWORK_TAG
+read -p "${BOLD}${YELLOW}Enter HTTP network tag : ${RESET}" HTTP_NETWORK_TAG
+echo "  "
+echo "${BOLD}${YELLOW}Your SSH IAP network tag :${CYAN}$IAP_NETWORK_TAG "
+echo "${BOLD}${YELLOW}Your SSH internal network tag :${CYAN}$INTERNAL_NETWORK_TAG "
+echo "${BOLD}${YELLOW}Your HTTP network tag :${CYAN}$HTTP_NETWORK_TAG "
 echo "${RESET} "
-echo "${BOLD}${CYAN}Your SSH IAP network tag :$IAP_NETWORK_TAG  "
-echo "Your SSH internal network tag :$INTERNAL_NETWORK_TAG  "
-echo "Your HTTP network tag :$HTTP_NETWORK_TAG  ${RESET}"
-echo " "
-#read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS
 
-while [ $VERIFY_DETAILS = n ];
-do echo " " &&  read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : " IAP_NETWORK_TAG && read -p "Enter SSH internal network tag : " INTERNAL_NETWORK_TAG && read -p "Enter HTTP network tag : " HTTP_NETWORK_TAG && echo "${RESET} " && echo "${BOLD}${CYAN}Your SSH IAP network tag :$IAP_NETWORK_TAG  " && echo "Your SSH internal network tag :$INTERNAL_NETWORK_TAG  " && echo "Your HTTP network tag :$HTTP_NETWORK_TAG  ${RESET}" && echo " " && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}";
+while [ $VERIFY_DETAILS != 'y' ];
+do echo " " && read -p "${BOLD}${YELLOW}Enter SSH IAP network tag : ${RESET}" IAP_NETWORK_TAG && read -p "${BOLD}${YELLOW}Enter SSH internal network tag : ${RESET}" INTERNAL_NETWORK_TAG && read -p "${BOLD}${YELLOW}Enter HTTP network tag : ${RESET}" HTTP_NETWORK_TAG && echo "  " && echo "${BOLD}${YELLOW}Your SSH IAP network tag :${CYAN}$IAP_NETWORK_TAG " && echo "${BOLD}${YELLOW}Your SSH internal network tag :${CYAN}$INTERNAL_NETWORK_TAG " && echo "${BOLD}${YELLOW}Your HTTP network tag :${CYAN}$HTTP_NETWORK_TAG " && echo "${RESET} " && read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS ;
 done
 
 
@@ -107,6 +106,9 @@ export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export PROJECT_NUMBER=$(gcloud projects list --filter="PROJECT_ID: $PROJECT_ID" | grep PROJECT_NUMBER |  awk '{print $2}')
 export INTERNAL_IP_JUICE_SHOP=$(gcloud compute instances list --filter='name:juice-shop' --format='value(INTERNAL_IP)')
 
+
+echo "${BOLD}${YELLOW}INTERNAL IP of juice-shop instance :${CYAN} $INTERNAL_IP_JUICE_SHOP"
+
 echo "${BOLD}${YELLOW}
 
 SSH to bastion instance here( NOTE - may throw error) :
@@ -145,10 +147,10 @@ Task 6 Completed
 ${RESET}"
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -158,3 +160,4 @@ Removing files
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
+logout
