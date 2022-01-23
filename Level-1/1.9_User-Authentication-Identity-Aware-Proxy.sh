@@ -50,14 +50,12 @@ echo "${YELLOW}${BOLD}
 
 create IAP from console
 
-Navigate here   -          https://console.cloud.google.com/security/iap?project=$PROJECT_ID
-
- Internal IAP
+Go here${CYAN} https://console.cloud.google.com/apis/credentials/consent/edit;newAppInternalUser=true?project=$PROJECT_ID ${YELLOW}and configure Internal IAP with the given credentials
  
-  Name         :  IAP Example
-  Home page    :  YOUR_URL
-  Privacy page :  YOUR_URL/Privacy
-  Email        :  LOGIN_EMAIL
+  Name         : ${CYAN} IAP Example ${YELLOW}
+  Home page    : ${CYAN} YOUR_APP_URL ${YELLOW}
+  DOMAIN       : ${CYAN} YOUR_APP_URL ${YELLOW} ( Do not include the starting https:// or trailing / from that URL. )
+  Email        : ${CYAN} LOGIN_EMAIL ${YELLOW}
   
    
  Click Save and Continue
@@ -72,39 +70,35 @@ Task 1 Completed
 
 ${RESET}"
 
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --role roles/iap.httpsResourceAccessor --member user:$EMAIL
 
 YOUR_URL=$(gcloud app browse | grep 'https')
-echo "${YELLOW}${BOLD}
+echo " ${BOLD}${BG_YELLOW} 
 
-create iap from console
-
-Navigate here   -          https://console.cloud.google.com/security/iap?project=$PROJECT_ID
-
- Internal IAP
+Confirm your iap configuration has following credentials 
+${RESET}${YELLOW}${BOLD}
+Navigate here   -     ${CYAN}     https://console.cloud.google.com/security/iap?project=$PROJECT_ID ${YELLOW} 
  
-  Name          :  IAP Example
-  Home page     :  $YOUR_URL
-  Privacy page  :  $YOUR_URL/Privacy
-  Email         :  $EMAIL
+  Name          : ${CYAN} IAP Example ${YELLOW} 
+  Home page     : ${CYAN} $YOUR_URL ${YELLOW}
+  DOMAIN        : ${CYAN} $YOUR_URL ${YELLOW} ( Do not include the starting https:// or trailing / from that URL. )
+  Email         : ${CYAN} $EMAIL ${YELLOW}
   
- Click Save and Continue
+ 
 ${RESET}"
 
 tput bold; tput setaf 3 ;tput blink;echo  WAIT; tput sgr0
 
 gcloud services disable appengineflex.googleapis.com
 EMAIL=$(gcloud config get-value account)
-gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --role roles/iap.httpsResourceAccessor --member user:$EMAIL
 
 echo "${YELLOW}${BOLD}
 
-https://console.cloud.google.com/security/iap?project=$PROJECT_ID
-
-Turn on IAP by sliding the switch next to App Engine app
+Go here ${CYAN}https://console.cloud.google.com/security/iap?project=$PROJECT_ID ${YELLOW} and Turn on IAP by sliding the switch next to App Engine app
 
  - select App Engine app and click add Principal
- - enter your email : $EMAIL
- - select role      : IAP-Secured WEB app user 
+ - enter your email : ${CYAN} $EMAIL ${YELLOW}
+ - select role      : ${CYAN} IAP-Secured WEB app user ${YELLOW}
  - click Add
 ${RESET}"
 echo "${GREEN}${BOLD}
@@ -132,10 +126,10 @@ Task 4 Completed
 ${RESET}"
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
