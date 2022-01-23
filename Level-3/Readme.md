@@ -59,4 +59,5 @@ chmod +x script.sh
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-3/3.8_Build-and-Secure-Networks-in-Google-Cloud-Challenge-Lab.sh
 chmod +x script.sh
 ./script.sh
+
 ```
