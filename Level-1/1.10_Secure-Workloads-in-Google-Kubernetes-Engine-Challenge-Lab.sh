@@ -178,6 +178,10 @@ echo "${BOLD}${YELLOW}
 
 Visit here and Setup Binary Authorization manually - ${CYAN}https://console.cloud.google.com/security/binary-authorization/start${YELLOW}
 
+                                                   OR                                              
+
+https://console.cloud.google.com/security/binary-authorization/policy/edit?project=$PROJECT_ID
+
   ==> In Default rule, Select ${CYAN}Disallow all images: Blocks all images from deployment. ${YELLOW}
   
   ==> In Specific rules, Select ${CYAN}GKE Cluster${YELLOW} as specific rule type.
