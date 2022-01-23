@@ -33,21 +33,20 @@ export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 #----------------------------------------------------code--------------------------------------------------#
 echo " "
-read -p "${BOLD}${YELLOW}Enter Cluster name : " CLUSTER_NAME
-read -p "Enter Cloud SQL Instance : " SQL_INSTANCE
-read -p "Enter Service Account : " SERVICE_ACCOUNT
-echo "${RESET} "
-echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME  "
-echo "Your Cloud SQL Instance : $SQL_INSTANCE  "
-echo "Your Service Account : $SERVICE_ACCOUNT  ${RESET}"
+read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME
+read -p "${BOLD}${YELLOW}Enter Cloud SQL Instance : ${RESET}" SQL_INSTANCE
+read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT
+echo "${BOLD} "
+echo "${YELLOW}Your Cluster name : ${CYAN}$CLUSTER_NAME  "
+echo "${YELLOW}Your Cloud SQL Instance : ${CYAN}$SQL_INSTANCE  "
+echo "${YELLOW}Your Service Account : ${CYAN}$SERVICE_ACCOUNT  ${RESET}"
 echo " "
-#read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "${BOLD}${YELLOW}Verify all details are correct? (y/n) : " VERIFY_DETAILS && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS
 
 
 while [ $VERIFY_DETAILS != 'y' ];
-do read -p "${BOLD}${YELLOW}Enter Cluster name : " CLUSTER_NAME && read -p "Enter Cloud SQL Instance : " SQL_INSTANCE && read -p "Enter Service Account : " SERVICE_ACCOUNT && echo " " && echo "${BOLD}${CYAN}Your Cluster name : $CLUSTER_NAME" && echo "Your Cloud SQL Instance : $SQL_INSTANCE" && echo "Your Service Account : $SERVICE_ACCOUNT${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) : " VERIFY_DETAILS && echo "${RESET}" ;
+do echo " " && read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME && read -p "${BOLD}${YELLOW}Enter Cloud SQL Instance : ${RESET}" SQL_INSTANCE && read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT && echo "${BOLD} " && echo "${YELLOW}Your Cluster name : ${CYAN}$CLUSTER_NAME" && echo "${YELLOW}Your Cloud SQL Instance : ${CYAN}$SQL_INSTANCE" && echo "${YELLOW}Your Service Account : ${CYAN}$SERVICE_ACCOUNT ${RESET}" && echo " " && read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS ;
 done
 
 gsutil cp gs://spls/gsp335/gsp335.zip .
@@ -76,9 +75,9 @@ ${RESET}"
 gcloud sql instances create $SQL_INSTANCE --region us-central1
 
 
-read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE
 while [ $VERIFY_SQL_INSTANCE != 'y' ];
-do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created?(y/n):" VERIFY_SQL_INSTANCE && echo "${RESET}" ;
+do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE ;
 done
 
 echo "${BOLD}${YELLOW}
@@ -115,6 +114,7 @@ Task 3 Completed
 
 ${RESET}"
 
+echo "${GREEN}"
 kubectl create -f volume.yaml
 sed -i "s#INSTANCE_CONNECTION_NAME#$DEVSHELL_PROJECT_ID:us-central1:$SQL_INSTANCE#g" wordpress.yaml
 
@@ -133,8 +133,10 @@ do sleep 10 && kubectl get service && read -p "External IP Appeared ? (y/n):" EX
 done
 
 . add_ip.sh  
-echo " "
-read -p "${YELLOW}${BOLD}Your DNS Record(from above command) : " DNS_RECORD  && echo "${RESET}"
+echo "
+
+"
+read -p "${YELLOW}${BOLD}Your DNS Record(from above command) : ${RESET}" DNS_RECORD
 
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.16.0/cert-manager.yaml
 
@@ -171,35 +173,35 @@ ${RESET}"
 
 echo "${BOLD}${YELLOW}
 
-Visit here and Setup Binary Authorization manually- https://console.cloud.google.com/security/binary-authorization/start
+Visit here and Setup Binary Authorization manually - ${CYAN}https://console.cloud.google.com/security/binary-authorization/start${YELLOW}
 
-  ==> In Default rule, Select Disallow all images: Blocks all images from deployment.
+  ==> In Default rule, Select ${CYAN}Disallow all images: Blocks all images from deployment. ${YELLOW}
   
-  ==> In Specific rules, Select 'GKE Cluster' as specific rule type.
-      Click Add Specipic rule, Type u in GKE Cluster resource ID box and select the option( format: 'location.cluster-id') and click Add.
+  ==> In Specific rules, Select ${CYAN}GKE Cluster${YELLOW} as specific rule type.
+      Click Add Specipic rule, Type u in GKE Cluster resource ID box and select the option ${CYAN}( format: 'location.cluster-id')${YELLOW} and click Add.
       
-  ==> In Images exempt from this policy section, Click Custom exemption rules and add the following :- 
+  ==> In Images exempt from this policy section, Click ${CYAN}Custom exemption rules${YELLOW} and add the following :- ${CYAN}
          docker.io/library/wordpress:latest
          us.gcr.io/k8s-artifacts-prod/ingress-nginx/*
          gcr.io/cloudsql-docker/*
-         quay.io/jetstack/*
+         quay.io/jetstack/*${YELLOW}
          
    ==> Now Save Policy.
 
   "
 
-echo " Enable Binary authorization in security section of cluster - 
+echo " Go here ${CYAN}https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details ${YELLOW}and Enable Binary authorization in security section of cluster.
 
-         https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details${RESET}"
+         ${RESET}"
 
 kubectl apply -f psp-restrictive.yaml
 kubectl apply -f psp-role.yaml
 kubectl apply -f psp-use.yaml
 
-read -p "${BOLD}${YELLOW}Done with Manual step?(y/n)" CONSENT_DONE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with Manual step? [y/n]: ${RESET}" CONSENT_DONE
 
 while [ $CONSENT_DONE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step?(y/n)" CONSENT_DONE && echo "${RESET}" ;
+do sleep 10 && read -p "${BOLD}${YELLOW}Done with Manual step? [y/n]: ${RESET}" CONSENT_DONE ;
 done
 echo "${GREEN}${BOLD}
 
@@ -212,10 +214,9 @@ Task 7 Completed
 
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
-
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -225,3 +226,4 @@ Removing files
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
+exit
