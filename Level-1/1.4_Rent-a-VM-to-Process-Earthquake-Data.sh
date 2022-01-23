@@ -27,23 +27,52 @@ ${RESET}"
 
 export ZONE=us-central1-a
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
-gsutil mb gs://$BUCKET_NAME/
+
 gcloud compute instances create myinstance --project=$GOOGLE_CLOUD_PROJECT --zone=$ZONE --scopes=https://www.googleapis.com/auth/cloud-platform 
 
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+gsutil mb gs://$BUCKET_NAME/
 cat > ssh.sh <<EOF
 sudo apt-get update
 sudo apt-get -y -qq install git
 sudo apt-get install python-mpltoolkits.basemap --quiet
 git --version
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
+
 
 git clone https://github.com/GoogleCloudPlatform/training-data-analyst
 cd training-data-analyst/CPB100/lab2b
 bash ingest.sh
+echo "${GREEN}${BOLD}
+
+Task 3 Completed
+
+${RESET}"
+
 bash install_missing.sh
 python3 transform.py
 ls -l
+echo "${GREEN}${BOLD}
+
+Task 4 Completed
+
+${RESET}"
+
 export BUCKET_NAME=$GOOGLE_CLOUD_PROJECT
 gsutil cp earthquakes.* gs://$BUCKET_NAME/earthquakes/
+echo "${GREEN}${BOLD}
+
+Task 5 Completed
+
+${RESET}"
 exit
 
 EOF
