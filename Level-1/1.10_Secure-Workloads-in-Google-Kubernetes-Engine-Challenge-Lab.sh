@@ -49,9 +49,6 @@ while [ $VERIFY_DETAILS != 'y' ];
 do echo " " && read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME && read -p "${BOLD}${YELLOW}Enter Cloud SQL Instance : ${RESET}" SQL_INSTANCE && read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT && echo "${BOLD} " && echo "${YELLOW}Your Cluster name : ${CYAN}$CLUSTER_NAME" && echo "${YELLOW}Your Cloud SQL Instance : ${CYAN}$SQL_INSTANCE" && echo "${YELLOW}Your Service Account : ${CYAN}$SERVICE_ACCOUNT ${RESET}" && echo " " && read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS ;
 done
 
-gsutil cp gs://spls/gsp335/gsp335.zip .
-unzip gsp335.zip
-
 echo "${BG_RED}${BOLD}
 
 while Cluster is creating, Run this in another(+) terminal it will also take some time
@@ -60,6 +57,11 @@ while Cluster is creating, Run this in another(+) terminal it will also take som
 gcloud sql instances create $SQL_INSTANCE --region us-central1
 
 ${RESET}"
+
+gsutil cp gs://spls/gsp335/gsp335.zip .
+unzip gsp335.zip
+
+
 gcloud container clusters create $CLUSTER_NAME \
    --zone us-central1-c \
    --machine-type n1-standard-4 \
@@ -82,15 +84,15 @@ done
 
 echo "${BOLD}${YELLOW}
 
-Create database 'wordpress' in sql instance manually here:- https://console.cloud.google.com/sql/instances/$SQL_INSTANCE/databases
+Create database 'wordpress' in sql instance manually here:- ${CYAN}https://console.cloud.google.com/sql/instances/$SQL_INSTANCE/databases?project=$PROJECT_ID
 
 ${RESET}"
 gcloud sql users create wordpress --instance $SQL_INSTANCE --host %
 
-read -p "${BOLD}${YELLOW}Created Database 'wordpress' ?(y/n)" CREATE_DATABASE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE
 
-while [ $CREATE_DATABASE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Created Database 'wordpress' ?(y/n)" CREATE_DATABASE && echo "${RESET}";
+while [ $CREATED_DATABASE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE ;
 done
 
 
@@ -125,11 +127,12 @@ helm repo add stable https://charts.helm.sh/stable
 helm repo update
 helm install nginx-ingress stable/nginx-ingress --set rbac.create=true
 kubectl get service
-sleep 5
-read -p "${YELLOW}${BOLD}External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}"
+kubectl get svc | grep nginx-ingress-controller | awk '{print $4}'
+LOADBALANCER_EXTERNAL_IP=$(kubectl get svc | grep nginx-ingress-controller | awk '{print $4}')
+echo $LOADBALANCER_EXTERNAL_IP
 
-while [ $EXTERNAL_IP_APPEARED != 'y' ];
-do sleep 10 && kubectl get service && read -p "External IP Appeared ? (y/n):" EXTERNAL_IP_APPEARED && echo "${RESET}" ;
+while [ $LOADBALANCER_EXTERNAL_IP = '<pending>' ];
+do sleep 2 && LOADBALANCER_EXTERNAL_IP=$(kubectl get svc | grep nginx-ingress-controller | awk '{print $4}') && echo $LOADBALANCER_EXTERNAL_IP ;
 done
 
 . add_ip.sh  
