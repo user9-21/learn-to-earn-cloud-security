@@ -35,8 +35,8 @@ export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 
 
-
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+
 #----------------------------------------------------code--------------------------------------------------#
 
 export MY_ZONE=us-central1-a
@@ -49,25 +49,14 @@ Task 1 Completed
 
 ${RESET}"
 
-echo "${YELLOW}${BOLD}
-Run this in another(+) terminal:
 
-${BG_RED}
 kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
 curl -s http://metadata.google.internal/computeMetadata/v1/instance/name
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/name
 kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never -- bash
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/scopes
-exit
 
-${RESET}"
-
-read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
-
-while [ $PROCEED != 'y' ];
-do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
-done
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -91,33 +80,17 @@ EOF
 kubectl delete pod gcloud
 kubectl get pod
 
-
-
-
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
 
 ${RESET}"
-echo "${YELLOW}${BOLD}
-Run this in another(+) terminal:
 
-${BG_RED}
 kubectl exec -it hostpath -- bash
 chroot /rootfs /bin/bash
 mount | grep volumes | awk '{print $3}' | xargs ls
-	
 docker ps
-exit
-exit
 
-${RESET}"
-
-read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
-
-while [ $PROCEED != 'y' ];
-do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
-done
 
 
 kubectl delete pod hostpath
@@ -128,23 +101,12 @@ Task 3 Completed
 
 ${RESET}"
 
-echo "${YELLOW}${BOLD}
-Run this in another(+) terminal:
-
-${BG_RED}
 kubectl run -it --rm gcloud --image=google/cloud-sdk:latest --restart=Never --overrides='{ "apiVersion": "v1", "spec": { "securityContext": { "runAsUser": 65534, "fsGroup": 65534 }, "nodeSelector": { "cloud.google.com/gke-nodepool": "second-pool" } } }' -- bash
 
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env
 curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/name
-exit
 
-${RESET}"
 
-read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED
-
-while [ $PROCEED != 'y' ];
-do sleep 5 && read -p "${BOLD}${YELLOW}DONE with Above Step? [y/n] : ${RESET}" PROCEED ;
-done
 
 
 kubectl create clusterrolebinding clusteradmin --clusterrole=cluster-admin --user="$(gcloud config list account --format 'value(core.account)')"
@@ -289,10 +251,10 @@ Task 5 Completed
 
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -302,3 +264,5 @@ Removing files
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
+exit
+logout
