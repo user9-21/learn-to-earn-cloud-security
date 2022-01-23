@@ -97,7 +97,23 @@ If permission denied in running script file in ssh , run manually the commands s
 ${RESET}"
 
 echo "${CYAN}${BOLD}"
-cat cos_vm_ssh.sh
+echo '
+git clone https://github.com/GoogleCloudPlatform/gke-migration-to-containers.git
+cd gke-migration-to-containers/container
+sudo docker build -t gcr.io/migration-to-containers/prime-flask:1.0.2 .
+ps aux | grep 8080
+
+read -p "${BOLD}${YELLOW}Enter the first 'chronos' port number(from above command output) : ${RESET}" PORT_NUMBER
+
+sudo kill -9 $PORT_NUMBER
+sudo docker run --rm -d --name=appuser -p 8080:8080 gcr.io/migration-to-containers/prime-flask:1.0.2
+ps aux
+ls /usr/local/bin/python
+sudo docker ps
+sudo docker exec -it $(sudo docker ps |awk '/prime-flask/ {print $1}') ps aux
+exit
+
+'
 echo "${RESET}"
 
 gcloud compute ssh cos-vm --zone us-central1-a --quiet
