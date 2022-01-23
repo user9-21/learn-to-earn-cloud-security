@@ -39,13 +39,13 @@ export ZONE=us-central1-a
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
-gcloud services enable \
-    cloudresourcemanager.googleapis.com \
-    container.googleapis.com \
-    gkeconnect.googleapis.com \
-    gkehub.googleapis.com \
-    serviceusage.googleapis.com \
-    anthos.googleapis.com
+
+gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable container.googleapis.com
+gcloud services enable gkeconnect.googleapis.com
+gcloud services enable gkehub.googleapis.com
+gcloud services enable serviceusage.googleapis.com
+gcloud services enable anthos.googleapis.com
 
 gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT_ID  --member="user:$EMAIL" --role="roles/storage.objectViewer"
@@ -59,6 +59,9 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
+
+gcloud services enable gkehub.googleapis.com
+gcloud services enable multiclustermetering.googleapis.com
 
 
 source ./common/connect-kops-remote.sh
@@ -107,6 +110,29 @@ kubectl create clusterrolebinding ksa-admin-binding \
     --serviceaccount default:$KSA
 printf "\n$(kubectl describe secret $KSA | sed -ne 's/^token: *//p')\n\n"
 
+echo "${BOLD}${YELLOW}
+
+If error in creating container HUB membership , Run below commands in another(+) terminal :
+
+${BG_RED}
+export PROJECT=$(gcloud config get-value project)
+cd ~/anthos-workshop
+source ./common/connect-kops-remote.sh
+export GKE_SA_CREDS=$WORK_DIR/anthos-connect-creds.json
+gcloud container clusters get-credentials central --zone us-central1-b --project $PROJECT
+export KOPS_STATE_STORE=gs://$DEVSHELL_PROJECT_ID-kops-remote
+NAME=remote.k8s.local
+kops export kubecfg ${NAME} --admin
+gcloud container hub memberships register remote  --context=remote.k8s.local  --service-account-key-file=$GKE_SA_CREDS  --kubeconfig=workdir/remote.context --project=$PROJECT
+export KSA=remote-admin-sa
+kubectl create serviceaccount $KSA
+kubectl create clusterrolebinding ksa-admin-binding \
+    --clusterrole cluster-admin \
+    --serviceaccount default:$KSA
+printf "\n$(kubectl describe secret $KSA | sed -ne 's/^token: *//p')\n\n"
+
+${RESET}"
+
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
@@ -129,8 +155,8 @@ Add metadata for the remote cluster
  - Click remote cluster.
  - Click on the pen sign next to Labels to add a key and value and click ADD LABEL.
  - Add 
-      Key 1 : location        Value 1 : remote
-      Key 2 : env             Value 2 : prod
+      Key 1 : ${CYAN}location${YELLOW}        Value 1 : ${CYAN}remote${YELLOW}
+      Key 2 : ${CYAN}env${YELLOW}             Value 2 : ${CYAN}prod${YELLOW}
  - Click Save. The Labels have been updated, and your updates are shown.
 ${RESET}"
 
