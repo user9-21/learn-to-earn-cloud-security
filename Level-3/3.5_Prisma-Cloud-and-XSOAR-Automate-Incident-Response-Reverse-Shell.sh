@@ -42,6 +42,10 @@ cd prisma_cloud_compute_edition
 ./linux/twistcli console export kubernetes --service-type LoadBalancer
 
 kubectl create -f twistlock_console.yaml
+echo "${BOLD}${GREEN}
+Task 1 Completed
+
+${RESET}"
 kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
 TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}')
 echo $TWISTLOCK_EXTERNAL_IP
@@ -61,26 +65,34 @@ done
 
 echo "${BOLD}${YELLOW}
 
-Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW}
+Go to ${CYAN}https://$TWISTLOCK_EXTERNAL_IP:8083${RESET}${BOLD}${YELLOW} and Install prisma Cloud Compute  as instructed from Qwiklabs start page.
 
-and Install prisma Cloud Compute  as instructed from Qwiklabs start page
+ ==> Create an administrator account with the following credentials:-
 
-${RED} RUn command in another terminal
+          Username : admin
+          Password : Pal0Alt0@123
+ ==> In the Prisma Cloud Compute Console, paste the license key in the Update your Prisma Cloud license field and click Register.         
+
+${RED} 
+RUn defender install command in another terminal
 
 ${RESET}"
 
-sleep 5
-
-if [[ ! -f ./twistcli || $(./twistcli --version) != *"21.04.421"* ]]; then curl --progress-bar -L -k --header "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk" https://$TWISTLOCK_EXTERNAL_IP:8083/api/v1/util/twistcli > twistcli; chmod +x twistcli; fi; ./twistcli defender install kubernetes --namespace twistlock --cri --monitor-service-accounts --token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk --address https://$TWISTLOCK_EXTERNAL_IP:8083 --cluster-address twistlock-console   
 
 sleep 10
 
 read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED 
 while [ $DEFENDER_INSTALLED != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED ;
+do sleep 8 && read -p "${BOLD}${YELLOW}DEfender installed(lOG IN TO PRISMA) ? (y/n) ${RESET}: " DEFENDER_INSTALLED ;
 done
 
-if [[ ! -f ./twistcli || $(./twistcli --version) != *"21.04.421"* ]]; then curl --progress-bar -L -k --header "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk" https://$TWISTLOCK_EXTERNAL_IP:8083/api/v1/util/twistcli > twistcli; chmod +x twistcli; fi; ./twistcli defender install kubernetes --namespace twistlock --cri --monitor-service-accounts --token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInJvbGVQZXJtcyI6W1syNTUsMjU1LDI1NSwyNTUsMjU1LDEyNywwXSxbMjU1LDI1NSwyNTUsMjU1LDI1NSwxMjcsMF1dLCJzZXNzaW9uVGltZW91dFNlYyI6MTgwMCwiZXhwIjoxNjQyOTM2Mzk2LCJpc3MiOiJ0d2lzdGxvY2sifQ.6l7_B606k_yhbQOynxaxrSxTfVCzXEIP-WHzziOXQsk --address https://$TWISTLOCK_EXTERNAL_IP:8083 --cluster-address twistlock-console
+echo "${BOLD}${GREEN}
+Task 2 Completed
+
+${RESET}"
+
+
+
 
 export EXTERNAL_IP_XSOAR=$(gcloud compute instances list --filter='name:xsoar-pcc-62' --format='value(EXTERNAL_IP)')
 
