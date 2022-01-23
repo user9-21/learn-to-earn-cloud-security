@@ -25,10 +25,10 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-gcloud auth list
-gcloud config list project
+#gcloud auth list
+#gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
-export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+#export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
 export ZONE=us-central1-a
 
@@ -45,9 +45,20 @@ EOF
 
 gcloud iam roles create editor --project $DEVSHELL_PROJECT_ID \
 --file role-definition.yaml
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
 gcloud iam roles create viewer --project $DEVSHELL_PROJECT_ID \
 --title "Role Viewer" --description "Custom role description." \
 --permissions compute.instances.get,compute.instances.list --stage ALPHA
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
 gcloud iam roles list --project $DEVSHELL_PROJECT_ID
 
 cat > new-role-definition.yaml <<EOF
@@ -62,18 +73,43 @@ includedPermissions:
 EOF
 gcloud iam roles update editor --project $DEVSHELL_PROJECT_ID \
 --file new-role-definition.yaml
+echo "${GREEN}${BOLD}
+
+Task 3 Completed
+
+${RESET}"
 gcloud iam roles update viewer --project $DEVSHELL_PROJECT_ID \
 --add-permissions storage.buckets.get,storage.buckets.list
+echo "${GREEN}${BOLD}
+
+Task 4 Completed
+
+${RESET}"
 gcloud iam roles update viewer --project $DEVSHELL_PROJECT_ID \
 --stage DISABLED
+echo "${GREEN}${BOLD}
+
+Task 5 Completed
+
+${RESET}"
 gcloud iam roles delete viewer --project $DEVSHELL_PROJECT_ID
 gcloud iam roles undelete viewer --project $DEVSHELL_PROJECT_ID
+echo "${GREEN}${BOLD}
 
+Task 6 Completed
+
+${RESET}"
+
+echo "${GREEN}${BOLD}
+
+Game Completed
+
+${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -83,3 +119,4 @@ Removing files
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
+logout
