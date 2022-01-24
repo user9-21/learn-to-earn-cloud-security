@@ -84,7 +84,7 @@ gcloud compute ssh siege-vm --zone us-west1-c --quiet
 tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
 
 tput bold; tput setaf 3 ;echo Configure load balancer properly in console; tput sgr0;
-tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list; tput sgr0;
+tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID; tput sgr0;
 
 export SIEGE_IP=$(gcloud compute instances list --filter='name:siege-vm' --format='value(EXTERNAL_IP)')
 echo $SIEGE_IP
@@ -92,7 +92,7 @@ gcloud compute security-policies create denylist-siege
 gcloud compute security-policies rules create 1000 --action=deny-403 --security-policy=denylist-siege --src-ip-ranges=$SIEGE_IP
 gcloud compute backend-services update http-backend --security-policy=denylist-siege --global
 tput bold; tput setaf 3 ;echo Configure load balancer properly in console; tput sgr0;
-tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list
+tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID
 echo Done with lab ; tput sgr0;
 
 echo "${GREEN}${BOLD}
