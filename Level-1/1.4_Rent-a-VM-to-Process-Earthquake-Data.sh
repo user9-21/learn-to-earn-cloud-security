@@ -38,7 +38,7 @@ ${RESET}"
 cat > ssh.sh <<EOF
 sudo apt-get update
 sudo apt-get -y -qq install git
-sudo apt-get --quiet install python-mpltoolkits.basemap
+sudo apt-get -y install python-mpltoolkits.basemap
 git --version
 echo "${GREEN}${BOLD}
 
@@ -49,6 +49,10 @@ ${RESET}"
 
 #git clone https://github.com/GoogleCloudPlatform/training-data-analyst
 #cd training-data-analyst/CPB100/lab2b
+mkdir training-data-analyst
+mkdir training-data-analyst/CPB100
+mkdir training-data-analyst/CPB100/lab2b
+cd training-data-analyst/CPB100/lab2b
 curl -o ingest.sh https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/ingest.sh
 curl -o install_missing.sh https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/install_missing.sh
 curl -o transform.py https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/transform.py
@@ -82,21 +86,27 @@ EOF
 chmod +x ssh.sh
 echo "${CYAN}${BOLD}
 
-File permission granted 
+File permission granted to ssh.sh
 
 ${RESET}"
 
 gsutil mb gs://$BUCKET_NAME/
 gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 
-echo "${BG_RED}${BOLD}
+echo "${BOLD}${YELLOW}
 
 Run this in ssh:
-
+${BG_RED}
 ./ssh.sh
 
+${RESET}${BOLD}${YELLOW}
+
+If file is not present in myinstance ssh, run this in another(+) terminal, then run the above command:
+${BG_RED}
+gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 ${RESET}"
 gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
+
 gcloud compute ssh myinstance --zone=$ZONE --quiet
 
 
