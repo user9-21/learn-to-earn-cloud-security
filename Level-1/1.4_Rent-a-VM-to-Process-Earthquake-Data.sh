@@ -38,7 +38,7 @@ ${RESET}"
 cat > ssh.sh <<EOF
 sudo apt-get update
 sudo apt-get -y -qq install git
-sudo apt-get install python-mpltoolkits.basemap --quiet
+sudo apt-get --quiet install python-mpltoolkits.basemap
 git --version
 echo "${GREEN}${BOLD}
 
@@ -47,8 +47,11 @@ Task 2 Completed
 ${RESET}"
 
 
-git clone https://github.com/GoogleCloudPlatform/training-data-analyst
-cd training-data-analyst/CPB100/lab2b
+#git clone https://github.com/GoogleCloudPlatform/training-data-analyst
+#cd training-data-analyst/CPB100/lab2b
+curl -o ingest.sh https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/ingest.sh
+curl -o install_missing.sh https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/install_missing.sh
+curl -o transform.py https://raw.githubusercontent.com/GoogleCloudPlatform/training-data-analyst/master/CPB100/lab2b/transform.py
 bash ingest.sh
 echo "${GREEN}${BOLD}
 
