@@ -38,7 +38,16 @@ export ZONE=us-central1-a
 
 #USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
-gsutil mb gs://$BUCKET_NAME/
+gcloud config set compute/zone us-central1-a
+gcloud compute instances create blue --zone=us-central1-a --machine-type=n1-standard-1 --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --scopes=https://www.googleapis.com/auth/devstorage.read_only --tags=web-server,http-server
+#--metadata=startup-script-url=gs://$BUCKET_NAME/blue.sh 
+echo "${GREEN}${BOLD}
+
+Task 1 Completed
+
+${RESET}"
+
+#gsutil mb gs://$BUCKET_NAME/
 cat > blue.sh <<EOF
 apt-get install -y nginx-light
 sed -i 's/nginx/Blue server/g' /var/www/html/index.nginx-debian.html
@@ -49,19 +58,13 @@ apt-get install -y nginx-light
 sed -i 's/nginx/Green server/g' /var/www/html/index.nginx-debian.html
 EOF
 
-gsutil  cp blue.sh gs://$BUCKET_NAME
-gsutil  cp green.sh gs://$BUCKET_NAME
+#gsutil  cp blue.sh gs://$BUCKET_NAME
+#gsutil  cp green.sh gs://$BUCKET_NAME
+#gcloud compute instances create green  --zone=us-central1-a --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/green.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
 
 
+gcloud compute instances create green  --zone=us-central1-a
 
-gcloud config set compute/zone us-central1-a
-gcloud compute instances create blue --zone=us-central1-a --machine-type=n1-standard-1 --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --metadata=startup-script-url=gs://$BUCKET_NAME/blue.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only --tags=web-server,http-server 
-echo "${GREEN}${BOLD}
-
-Task 1 Completed
-
-${RESET}"
-gcloud compute instances create green  --zone=us-central1-a --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/green.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
@@ -69,18 +72,43 @@ Task 2 Completed
 ${RESET}"
 #gcloud compute instances create blue --zone=us-central1-a --machine-type=n1-standard-1 --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=web-server,http-server --create-disk=auto-delete=yes,boot=yes,device-name=blue,image=projects/debian-cloud/global/images/debian-10-buster-v20210916,mode=rw,size=10,type=projects/$GOOGLE_CLOUD_PROJECT/zones/us-east4-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
 
-
 #gcloud compute scp blue.sh blue:~
 #gcloud compute scp green.sh green:~
 
-#gcloud compute ssh blue --zone us-central1-a --quiet
+cat > 2.sh <<EOF
+echo "${YELLOW}${BOLD}
 
-#gcloud compute ssh green  --zone us-central1-a --quiet
+Run this in SSH:
+{BG_RED}
+sudo apt-get install -y nginx-light
+exit
 
-#tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
+${RESET}"
+gcloud compute ssh blue --zone us-central1-a --quiet
+echo "${YELLOW}${BOLD}
+
+Run this in SSH:
+{BG_RED}
+sudo apt-get install -y nginx-light
+exit
+
+${RESET}"
+gcloud compute ssh green  --zone us-central1-a --quiet
+
+tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
+
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
+
+${RESET}"
+EOF
+chmod +x 2.sh
+echo "${YELLOW}${BOLD}
+
+Run this in another terminal:
+{BG_RED}
+./2.sh
 
 ${RESET}"
 gcloud compute firewall-rules create allow-http-web-server --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80,icmp --source-ranges=0.0.0.0/0 --target-tags=web-server
@@ -97,7 +125,6 @@ Task 5 Completed
 ${RESET}"
 gcloud iam service-accounts create network-admin --display-name network-admin
 export PROJECT=$(gcloud info --format='value(config.project)')
-
 export SA_EMAIL=$(gcloud iam service-accounts list --filter="displayName:network-admin" --format='value(email)')
 echo $SA_EMAIL
 gcloud projects add-iam-policy-binding $PROJECT  --role roles/compute.admin  --member serviceAccount:$SA_EMAIL	
