@@ -80,14 +80,28 @@ gcloud compute instances create siege-vm --machine-type=n1-standard-1 --zone=us-
 sleep 10
 
 tput bold; tput setaf 3 ;echo siege-vm  created; tput sgr0
-
-gcloud compute health-checks create tcp http-health-check --port 80
-gcloud compute backend-services create http-backend --protocol=HTTP --port-name=http --health-checks=http-basic-check --global
-gcloud compute backend-services add-backend http-backend --instance-group=us-east1-mig --instance-group-region=us-east1  --balancing-mode=Rate --max-rate-per-instance=50 --global
-gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --global
+gcloud compute instance-groups managed set-named-ports us-east1-mig --named-ports http:80 --region us-east1
+gcloud compute instance-groups managed set-named-ports europe-west1-mig --named-ports http:80 --region europe-west1
 
 gcloud compute addresses create lb-ipv4-1 --ip-version=IPV4 --global
 gcloud compute addresses create lb-ipv6-1 --ip-version=IPV6  --global
+
+gcloud compute health-checks create tcp http-health-check --port 80
+gcloud compute backend-services create http-backend --protocol=HTTP --port-name=http --health-checks=http-health-check --global
+gcloud compute backend-services add-backend http-backend --instance-group=us-east1-mig --instance-group-region=us-east1  --balancing-mode=Rate --max-rate-per-instance=50 --global
+#gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --global
+gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --max-utilization 0.8 --global
+gcloud compute url-maps create http-lb --default-service http-backend
+gcloud compute target-http-proxies create http-lb-proxy --url-map=http-lb
+gcloud compute forwarding-rules create http-content-rule \
+        --load-balancing-scheme=EXTERNAL \
+        --address=lb-ipv4-1 \
+        --address=lb-ipv6-1 \
+        --global \
+        --target-http-proxy=http-lb-proxy \
+        --ports=80
+        
+    
 tput bold; tput setaf 3 ;echo Run this in siege-vm  instance; tput sgr0;
 tput bold; tput setab 1 ;echo '
 
@@ -97,7 +111,7 @@ exit
 
 '; tput sgr0;
 set -x
-gcloud compute ssh siege-vm --zone us-west1-c --quiet
+#gcloud compute ssh siege-vm --zone us-west1-c --quiet
 
 tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
 set +x
