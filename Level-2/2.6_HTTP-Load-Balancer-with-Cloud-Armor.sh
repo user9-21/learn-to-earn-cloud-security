@@ -43,7 +43,6 @@ export ZONE=us-central1-a
 gcloud compute firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
 gcloud compute firewall-rules create default-allow-health-check --direction=INGRESS --priority=1000  --action=ALLOW --rules=tcp --source-ranges=130.211.0.0/22,35.191.0.0/16 --target-tags=http-server
 
-tput bold; tput setaf 3 ;echo firewall created; tput sgr0
 echo "${BOLD}${GREEN}
 
 Task 1 completed
@@ -67,7 +66,6 @@ gcloud beta compute instance-groups managed set-autoscaling "us-east1-mig" --reg
 gcloud beta compute instance-groups managed create europe-west1-mig --base-instance-name=europe-west1-mig --template=europe-west1-template --size=1 --zones=europe-west1-b,europe-west1-c,europe-west1-d --instance-redistribution-type=PROACTIVE --target-distribution-shape=EVEN
 gcloud beta compute instance-groups managed set-autoscaling "europe-west1-mig" --region "europe-west1" --cool-down-period "45" --max-num-replicas "5" --min-num-replicas "1" --target-cpu-utilization "0.8" --mode "on"
 
-tput bold; tput setaf 3 ;echo instance group created; tput sgr0;
 
 echo "${BOLD}${GREEN}
 
@@ -76,8 +74,6 @@ Task 2 completed
 ${RESET}"
 
 gcloud compute instances create siege-vm --machine-type=n1-standard-1 --zone=us-west1-c --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/siege.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
-
-sleep 10
 
 tput bold; tput setaf 3 ;echo siege-vm  created; tput sgr0
 gcloud compute instance-groups managed set-named-ports us-east1-mig --named-ports http:80 --region us-east1
@@ -93,43 +89,27 @@ gcloud compute backend-services add-backend http-backend --instance-group=us-eas
 gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --max-utilization 0.8 --global
 gcloud compute url-maps create http-lb --default-service http-backend
 gcloud compute target-http-proxies create http-lb-proxy --url-map=http-lb
-gcloud compute forwarding-rules create http-content-rule \
-        --load-balancing-scheme=EXTERNAL \
-        --address=lb-ipv4-1 \
-        --address=lb-ipv6-1 \
-        --global \
-        --target-http-proxy=http-lb-proxy \
-        --ports=80
-        
-    
-tput bold; tput setaf 3 ;echo Run this in siege-vm  instance; tput sgr0;
-tput bold; tput setab 1 ;echo '
+gcloud compute forwarding-rules create http-content-rule --load-balancing-scheme=EXTERNAL --address=lb-ipv4-1 --global --target-http-proxy=http-lb-proxy --ports=80
+gcloud compute forwarding-rules create http-content-rule1 --load-balancing-scheme=EXTERNAL --address=lb-ipv6-1 --global --target-http-proxy=http-lb-proxy --ports=80
 
-sudo apt-get -y install siege
+echo "${GREEN}${BOLD}
 
-exit
+Task 3 Completed
 
-'; tput sgr0;
-set -x
-#gcloud compute ssh siege-vm --zone us-west1-c --quiet
+${RESET}"
 
-tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
-set +x
-tput bold; tput setaf 3 ;echo Configure load balancer properly in console; tput sgr0;
-tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID; tput sgr0;
-
+echo "${YELLOW}${BOLD}Check load balancer is properly configured - ${CYAN}https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers?project=$PROJECT_ID ${RESET}"
 export SIEGE_IP=$(gcloud compute instances list --filter='name:siege-vm' --format='value(EXTERNAL_IP)')
 echo $SIEGE_IP
 gcloud compute security-policies create denylist-siege
 gcloud compute security-policies rules create 1000 --action=deny-403 --security-policy=denylist-siege --src-ip-ranges=$SIEGE_IP
 gcloud compute backend-services update http-backend --security-policy=denylist-siege --global
-tput bold; tput setaf 3 ;echo Configure load balancer properly in console to get checkmark for Task 3; tput sgr0;
-tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID
-echo Done with lab ; tput sgr0;
+
+tput bold; tput setaf 3 ;echo Done with lab ; tput sgr0;
 
 echo "${GREEN}${BOLD}
 
-Task  Completed
+Task 4 Completed
 
 ${RESET}"
 
