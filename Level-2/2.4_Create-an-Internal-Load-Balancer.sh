@@ -25,8 +25,8 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-gcloud auth list
-gcloud config list project
+#gcloud auth list
+#gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
@@ -36,7 +36,7 @@ export ZONE=us-central1-a
 
 
 
-USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+#USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 
@@ -54,16 +54,6 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
-
-echo "${YELLOW}${BOLD}
-
- Configure load balancer properly in console
- 
-    Navigate here - https://console.cloud.google.com/net-services/loadbalancing/internal/add?protocol=TCP&project=$PROJECT_ID
-    
-${RESET}"
-
-
 
 gcloud beta compute instance-templates create instance-template-1 --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-central1/subnetworks/subnet-a --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/ilb/startup.sh --maintenance-policy=MIGRATE --region=us-central1 --tags=lb-backend --boot-disk-device-name=instance-template-1
 gcloud beta compute instance-templates create instance-template-2 --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-central1/subnetworks/subnet-b --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/ilb/startup.sh --maintenance-policy=MIGRATE --region=us-central1 --tags=lb-backend --boot-disk-device-name=instance-template-2
@@ -93,38 +83,25 @@ ${RESET}"
 
 
 
-echo "${YELLOW}${BOLD}
+echo "${YELLOW}${BOLD}Configure load balancer properly in console - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID ${RESET}"
+gcloud compute health-checks create tcp my-ilb-health-check --region=us-central1 --port=80
+gcloud compute backend-services create my-ilb --load-balancing-scheme=internal --protocol=tcp --region=us-central1 --health-checks=my-ilb-health-check --health-checks-region=us-central1
+gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-1 --instance-group-zone=us-central1-a
+gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-2 --instance-group-zone=us-central1-b
+    
+#gcloud compute addresses create my-ilb-ip --region=us-central1 --subnet=subnet-b --addresses=10.10.30.5 --purpose=SHARED_LOADBALANCER_VIP
 
- Configure load balancer properly in console
- 
-    Navigate here - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID
-    
-                                            OR  
-    
-    https://console.cloud.google.com/net-services/loadbalancing/internal/add?protocol=TCP&project=$PROJECT_ID
-    
-    
-   -  Under TCP Load Balancing, click on Start configuration.
-   -  For Internet facing or internal only, select Only between my VMs.
-   -  Click Continue.
-   -  For Name, type my-ilb.
-   -  For Region, select us-central1.
-   -  For Network, select my-internal-app.
-   
-   
-   
-Configure the Internal Load Balancer Properly as informed on lab page and your ${GREEN} Task 3 ${YELLOW} would be Completed.
+gcloud compute forwarding-rules create fr-ilb --region=us-central1 --load-balancing-scheme=internal --network=my-internal-app --subnet=subnet-b --address=10.10.30.5 --ip-protocol=TCP --ports=80 --backend-service=my-ilb --backend-service-region=us-central1
+echo "${GREEN}${BOLD}
 
+Task 3 Completed
 
 ${RESET}"
-
-
-
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
