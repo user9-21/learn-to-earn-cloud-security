@@ -45,6 +45,9 @@ gcloud config set compute/zone us-central1-a
 cat > bastion_ssh.sh << EOF
 kubectl apply -f ./manifests/hello-app/
 kubectl get pods
+
+kubectl logs --tail 10 -f $(kubectl get pods -oname -l app=hello)
+kubectl logs --tail 10 -f $(kubectl get pods -oname -l app=not-hello)
 echo "${GREEN}${BOLD}
 
 Task 2 Completed
@@ -52,16 +55,21 @@ Task 2 Completed
 ${RESET}"
 kubectl apply -f ./manifests/network-policy.yaml
 
+kubectl logs --tail 10 -f $(kubectl get pods -oname -l app=not-hello)
 kubectl delete -f ./manifests/network-policy.yaml
 kubectl create -f ./manifests/network-policy-namespaced.yaml
+
+kubectl logs --tail 10 -f $(kubectl get pods -oname -l app=hello)
 kubectl -n hello-apps apply -f ./manifests/hello-app/hello-client.yaml
 
+kubectl logs --tail 10 -f -n hello-apps $(kubectl get pods -oname -l app=hello -n hello-apps)
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
 
 ${RESET}"
 exit
+
 EOF
 
 chmod +x bastion_ssh.sh
