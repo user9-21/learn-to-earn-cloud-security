@@ -35,7 +35,6 @@ gcloud config set compute/zone us-central1-a
 export ZONE=us-central1-a
 
 
-
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
@@ -55,9 +54,11 @@ echo "${BOLD}${YELLOW}
 saVE and run the scan
 
 Visit :- https://console.cloud.google.com/security/web-scanner/scanConfigs/edit?project=$PROJECT_ID
- 
-
 ${RESET}"
+
+sed -i "s#{% autoescape false %}#{% autoescape true %}#g" templates/submitted.html
+
+gcloud app deploy --quiet
 
 #https://console.cloud.google.com/appengine/securityscan?project=
 
@@ -72,20 +73,20 @@ Task 2 Completed
 
 ${RESET}"
 
-sed -i "s#{% autoescape false %}#{% autoescape true %}#g" templates/submitted.html
-
-gcloud app deploy --quiet
 
 
+echo "${GREEN}${BOLD}
 
+Task 3 Completed
 
+${RESET}"
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -95,3 +96,4 @@ Removing files
 ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
+logout
