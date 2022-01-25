@@ -32,11 +32,11 @@ export PROJECT_ID=$(gcloud info --format='value(config.project)')
 #export EMAIL=$(gcloud config get-value core/account)
 #gcloud config set compute/region us-central1
 #gcloud config set compute/zone us-central1-a
-export ZONE=us-central1-a
+#export ZONE=us-central1-a
 
 
 
-USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+#USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 read -p "${BOLD}${YELLOW}Enter second Project ID : ${RESET}" SECOND_PROJECT_ID
@@ -47,10 +47,14 @@ gcloud compute networks subnets create network-b-central --network network-b \
     --range 10.8.0.0/16 --region us-central1
 gcloud compute instances create vm-b --zone us-central1-a --network network-b --subnet network-b-central
 gcloud compute firewall-rules create network-b-fw --network network-b --allow tcp:22,icmp
-tput setaf 2; echo Task 2 Completed ; tput sgr0; 
+tput bold;tput setaf 2; echo '
+
+Task 2 Completed
+
+'; tput sgr0; 
 gcloud compute networks peerings create peer-ba --network=network-b --peer-project $PROJECT_ID --peer-network network-a
 echo '  '
-tput setaf 2; echo Task 4 Completed ; tput sgr0; " > 2.sh
+tput bold;tput setaf 2; echo Task 4 Completed ; tput sgr0; " > 2.sh
 
 chmod +x 2.sh
 echo "${BG_RED}${BOLD}
