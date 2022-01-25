@@ -25,8 +25,8 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-gcloud auth list
-gcloud config list project
+#gcloud auth list
+#gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
@@ -36,7 +36,7 @@ export ZONE=us-central1-a
 
 
 
-USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+#USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 
@@ -44,6 +44,17 @@ gcloud compute firewall-rules create default-allow-http --direction=INGRESS --pr
 gcloud compute firewall-rules create default-allow-health-check --direction=INGRESS --priority=1000  --action=ALLOW --rules=tcp --source-ranges=130.211.0.0/22,35.191.0.0/16 --target-tags=http-server
 
 tput bold; tput setaf 3 ;echo firewall created; tput sgr0
+echo "${BOLD}${GREEN}
+
+Task 1 completed
+
+${RESET}"
+
+echo '#!/bin/bash
+apt-get update
+apt-get -y install siege'  > siege.sh
+gsutil mb gs://$BUCKET_NAME/
+gsutil  cp siege.sh gs://$BUCKET_NAME
 
 gcloud beta compute instance-templates create us-east1-template --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-east1/subnetworks/default --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/httplb/startup.sh --maintenance-policy=MIGRATE --region=us-east1 --tags=http-server --boot-disk-device-name=us-east1-template
 gcloud beta compute instance-templates create europe-west1-template --machine-type=n1-standard-1 --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/europe-west1/subnetworks/default --network-tier=PREMIUM --metadata=startup-script-url=gs://cloud-training/gcpnet/httplb/startup.sh --maintenance-policy=MIGRATE --region=europe-west1 --tags=http-server --boot-disk-device-name=europe-west1-template
@@ -58,7 +69,13 @@ gcloud beta compute instance-groups managed set-autoscaling "europe-west1-mig" -
 
 tput bold; tput setaf 3 ;echo instance group created; tput sgr0;
 
-gcloud compute instances create siege-vm --machine-type=n1-standard-1 --zone=us-west1-c
+echo "${BOLD}${GREEN}
+
+Task 2 completed
+
+${RESET}"
+
+gcloud compute instances create siege-vm --machine-type=n1-standard-1 --zone=us-west1-c --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/siege.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
 
 sleep 10
 
@@ -79,10 +96,11 @@ sudo apt-get -y install siege
 exit
 
 '; tput sgr0;
+set -x
 gcloud compute ssh siege-vm --zone us-west1-c --quiet
 
 tput bold; tput setaf 3 ;echo Back in cloudshell; tput sgr0;
-
+set +x
 tput bold; tput setaf 3 ;echo Configure load balancer properly in console; tput sgr0;
 tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID; tput sgr0;
 
@@ -91,7 +109,7 @@ echo $SIEGE_IP
 gcloud compute security-policies create denylist-siege
 gcloud compute security-policies rules create 1000 --action=deny-403 --security-policy=denylist-siege --src-ip-ranges=$SIEGE_IP
 gcloud compute backend-services update http-backend --security-policy=denylist-siege --global
-tput bold; tput setaf 3 ;echo Configure load balancer properly in console; tput sgr0;
+tput bold; tput setaf 3 ;echo Configure load balancer properly in console to get checkmark for Task 3; tput sgr0;
 tput bold; tput setaf 3 ;echo Navigate here - https://console.cloud.google.com/net-services/loadbalancing/http/add?project=$PROJECT_ID
 echo Done with lab ; tput sgr0;
 
@@ -103,10 +121,10 @@ ${RESET}"
 
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
