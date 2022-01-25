@@ -46,8 +46,8 @@ SECOND_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk
 echo $SECOND_PROJECT_ID
 fi
 
-echo "${BOLD}${YELLOW}Your second Project ID :${CYAN} $SECOND_PROJECT_ID ${RESET}"
-read -p "${BOLD}${YELLOW}Confirm [y/n] : ${RESET}" CONFIRM
+#echo "${BOLD}${YELLOW}Your second Project ID :${CYAN} $SECOND_PROJECT_ID ${RESET}"
+read -p "${BOLD}${YELLOW}Confirm Your second Project ID =${CYAN} $SECOND_PROJECT_ID ${YELLOW}[y/n] : ${RESET}" CONFIRM
 
 if [ $CONFIRM != 'y' ]
 then
