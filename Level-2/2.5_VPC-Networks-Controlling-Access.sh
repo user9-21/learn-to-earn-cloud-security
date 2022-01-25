@@ -29,7 +29,7 @@ ${RESET}"
 #gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
-export EMAIL=$(gcloud config get-value core/account)
+#export EMAIL=$(gcloud config get-value core/account)
 #gcloud config set compute/region us-central1
 #gcloud config set compute/zone us-central1-a
 export ZONE=us-central1-a
@@ -79,7 +79,7 @@ cat > 2.sh <<EOF
 echo "${YELLOW}${BOLD}
 
 Run this in SSH:
-{BG_RED}
+${BG_RED}
 sudo apt-get install -y nginx-light
 exit
 
@@ -88,7 +88,7 @@ gcloud compute ssh blue --zone us-central1-a --quiet
 echo "${YELLOW}${BOLD}
 
 Run this in SSH:
-{BG_RED}
+${BG_RED}
 sudo apt-get install -y nginx-light
 exit
 
@@ -107,7 +107,7 @@ chmod +x 2.sh
 echo "${YELLOW}${BOLD}
 
 Run this in another terminal:
-{BG_RED}
+${BG_RED}
 ./2.sh
 
 ${RESET}"
@@ -124,11 +124,13 @@ Task 5 Completed
 
 ${RESET}"
 gcloud iam service-accounts create network-admin --display-name network-admin
-export PROJECT=$(gcloud info --format='value(config.project)')
-export SA_EMAIL=$(gcloud iam service-accounts list --filter="displayName:network-admin" --format='value(email)')
+export PROJECT=$(gcloud info --format="value(config.project)")
+export SA_EMAIL=$(gcloud iam service-accounts list --filter="displayName:network-admin" --format="value(email)")
 echo $SA_EMAIL
-gcloud projects add-iam-policy-binding $PROJECT  --role roles/compute.admin  --member serviceAccount:$SA_EMAIL	
+gcloud projects add-iam-policy-binding $PROJECT  --role roles/compute.admin  --member serviceAccount:$SA_EMAIL
 gcloud iam service-accounts keys create credentials.json   --iam-account $SA_EMAIL
+
+
 
 echo "${GREEN}${BOLD}
 
