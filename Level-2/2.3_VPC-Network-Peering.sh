@@ -34,12 +34,25 @@ export PROJECT_ID=$(gcloud info --format='value(config.project)')
 #gcloud config set compute/zone us-central1-a
 #export ZONE=us-central1-a
 
-
-
 #USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
+#read -p "${BOLD}${YELLOW}Enter second Project ID : ${RESET}" SECOND_PROJECT_ID
+
+SECOND_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk '{print $2}' | head -1)
+if [ $PROJECT_ID = $SECOND_PROJECT_ID ]
+then
+SECOND_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk '{print $2}' | tail -1)
+echo $SECOND_PROJECT_ID
+fi
+
+echo "${BOLD}${YELLOW}Your second Project ID :${CYAN} $SECOND_PROJECT_ID ${RESET}"
+read -p "${BOLD}${YELLOW}Confirm [y/n] : ${RESET}" CONFIRM
+
+if [ $CONFIRM != 'y' ]
+then
 read -p "${BOLD}${YELLOW}Enter second Project ID : ${RESET}" SECOND_PROJECT_ID
+fi
 
 echo "gcloud config set project $SECOND_PROJECT_ID
 gcloud compute networks create network-b --subnet-mode custom
