@@ -51,7 +51,7 @@ fi
 
 read -p "${BOLD}${YELLOW}Confirm Your second Email ID =${CYAN} $LASTUSER ${YELLOW}[y/n] : ${RESET}" CONFIRM
 
-if [ $CONFIRM != '[Y/y]' ]
+if [ $CONFIRM != 'y' ]
 then
 read -p "${YELLOW}${BOLD}Enter second Email Address : ${RESET}" LASTUSER
 fi
