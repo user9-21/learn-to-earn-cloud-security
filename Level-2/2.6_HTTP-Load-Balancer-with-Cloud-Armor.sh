@@ -47,37 +47,29 @@ gsutil  cp siege.sh gs://$BUCKET_NAME
 
 cat > 2.sh << EOF
 #!/bin/bash
-gcloud compute addresses create lb-ipv4-1 --ip-version=IPV4 --global
-gcloud compute addresses create lb-ipv6-1 --ip-version=IPV6  --global
+#gcloud compute addresses create lb-ipv4-1 --ip-version=IPV4 --global
+#gcloud compute addresses create lb-ipv6-1 --ip-version=IPV6  --global
 
 
 gcloud compute health-checks create tcp http-health-check --port 80
 gcloud compute backend-services create http-backend --protocol=HTTP --port-name=http --health-checks=http-health-check --global
 gcloud compute url-maps create http-lb --default-service http-backend
+echo "${YELLOW}${BOLD}
+
+Check load balancer is properly configured - ${CYAN}https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers?project=$PROJECT_ID 
+
+${RESET}"
+
 gcloud compute target-http-proxies create http-lb-proxy --url-map=http-lb
-gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL --address=lb-ipv4-1 --global --target-http-proxy=http-lb-proxy --ports=80
-gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL --address=lb-ipv6-1 --global --target-http-proxy=http-lb-proxy --ports=80
+#gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL --address=lb-ipv4-1 --global --target-http-proxy=http-lb-proxy --ports=80
+#gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL --address=lb-ipv6-1 --global --target-http-proxy=http-lb-proxy --ports=80
+gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL  --global --target-http-proxy=http-lb-proxy --ip-version=IPV4 --ports=80
+gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL  --global --target-http-proxy=http-lb-proxy --ip-version=IPV6 --ports=80
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
 
 ${RESET}"
-gcloud compute instances create siege-vm --machine-type=n1-standard-1 --zone=us-west1-c --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/siege.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
-export SIEGE_IP=$(gcloud compute instances list --filter="name:siege-vm" --format="value(EXTERNAL_IP)")
-echo $SIEGE_IP
-gcloud compute security-policies create denylist-siege
-gcloud compute security-policies rules create 1000 --action=deny-403 --security-policy=denylist-siege --src-ip-ranges=$SIEGE_IP
-gcloud compute backend-services update http-backend --security-policy=denylist-siege --global
-
-tput bold; tput setaf 3 ;echo Done with lab ; tput sgr0;
-
-echo "${GREEN}${BOLD}
-
-Task 4 Completed
-
-${RESET}"
-
-
 
 EOF
 chmod +x 2.sh
@@ -130,8 +122,8 @@ ${RESET}"
 gcloud compute instance-groups managed set-named-ports us-east1-mig --named-ports http:80 --region us-east1
 gcloud compute instance-groups managed set-named-ports europe-west1-mig --named-ports http:80 --region europe-west1
 
-gcloud compute addresses create lb-ipv4-1 --ip-version=IPV4 --global
-gcloud compute addresses create lb-ipv6-1 --ip-version=IPV6  --global
+#gcloud compute addresses create lb-ipv4-1 --ip-version=IPV4 --global
+#gcloud compute addresses create lb-ipv6-1 --ip-version=IPV6  --global
 
 
 gcloud compute health-checks create tcp http-health-check --port 80
@@ -143,14 +135,18 @@ gcloud compute backend-services add-backend http-backend --instance-group=us-eas
 gcloud compute backend-services add-backend http-backend --instance-group=europe-west1-mig --instance-group-region=europe-west1  --balancing-mode=Utilization --max-utilization 0.8 --global
 gcloud compute url-maps create http-lb --default-service http-backend
 gcloud compute target-http-proxies create http-lb-proxy --url-map=http-lb
-gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL --address=lb-ipv4-1 --global --target-http-proxy=http-lb-proxy --ports=80
-gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL --address=lb-ipv6-1 --global --target-http-proxy=http-lb-proxy --ports=80
+#gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL --address=lb-ipv4-1 --global --target-http-proxy=http-lb-proxy --ports=80
+#gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL --address=lb-ipv6-1 --global --target-http-proxy=http-lb-proxy --ports=80
 
+gcloud compute forwarding-rules create http-lb-forwarding-rule --load-balancing-scheme=EXTERNAL  --global --target-http-proxy=http-lb-proxy --ip-version=IPV4 --ports=80
+gcloud compute forwarding-rules create http-lb-forwarding-rule-2 --load-balancing-scheme=EXTERNAL  --global --target-http-proxy=http-lb-proxy --ip-version=IPV6 --ports=80
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
 
-${RESET}"
+"
+
+echo "${YELLOW}ignore already exists ERROR , its because you ran the command in another terminal${RESET}"
 
 export SIEGE_IP=$(gcloud compute instances list --filter="name:siege-vm" --format="value(EXTERNAL_IP)")
 echo $SIEGE_IP
