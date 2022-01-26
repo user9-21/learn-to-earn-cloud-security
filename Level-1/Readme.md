@@ -1,4 +1,4 @@
-## [1. Cloud IAM: Qwik Start](https://www.cloudskillsboost.google/games/2265/labs/12925)
+## [1. Cloud IAM: Qwik Start](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.1_Cloud-IAM-Qwik-Start.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.1_Cloud-IAM-Qwik-Start.sh
 chmod +x script.sh
@@ -6,7 +6,7 @@ chmod +x script.sh
 
 ```
 
-## [2. Getting started with Certificate Authority Service: Qwik Start](https://www.cloudskillsboost.google/games/2265/labs/12926)
+## [2. Getting started with Certificate Authority Service: Qwik Start](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.2_Getting-started-with-Certificate-Authority-Service-Qwik-Start.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.2_Getting-started-with-Certificate-Authority-Service-Qwik-Start.sh
 chmod +x script.sh
@@ -14,7 +14,7 @@ chmod +x script.sh
 
 ```
 
-## [3. Apigee API Management Fundamentals](https://www.cloudskillsboost.google/games/2265/labs/12927)
+## [3. Apigee API Management Fundamentals]()
 
 #### Run this in RDP COMMAND PROMPT(to download all needed files in one click)
 ```
@@ -27,7 +27,7 @@ curl -o HipsterAPIProductImage.png https://storage.googleapis.com/apigeexlabs/ap
 
 ```
 
-## [4. Rent-a-VM to Process Earthquake Data](https://www.cloudskillsboost.google/games/2265/labs/12928)
+## [4. Rent-a-VM to Process Earthquake Data](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.4_Rent-a-VM-to-Process-Earthquake-Data.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.4_Rent-a-VM-to-Process-Earthquake-Data.sh
 chmod +x script.sh
@@ -35,7 +35,7 @@ chmod +x script.sh
 
 ```
 
-## [5. Cloud IDS: Qwik Start](https://www.cloudskillsboost.google/games/2265/labs/12929)
+## [5. Cloud IDS: Qwik Start](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.5_Cloud-IDS-Qwik-Start.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.5_Cloud-IDS-Qwik-Start.sh
 chmod +x script.sh
@@ -43,7 +43,7 @@ chmod +x script.sh
 
 ```
 
-## [6. Getting Started with Cloud KMS](https://www.cloudskillsboost.google/games/2265/labs/12930)
+## [6. Getting Started with Cloud KMS](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.6_Getting-Started-with-Cloud-KMS.sh)
 ```
   curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.6_Getting-Started-with-Cloud-KMS.sh
   chmod +x script.sh
@@ -51,13 +51,13 @@ chmod +x script.sh
 
 ```
 
-## [7. Google Workspace Admin: Securing](https://www.cloudskillsboost.google/games/2265/labs/12931)
+## [7. Google Workspace Admin: Securing]( )
 ```
 DO it MAnually
 
 ```
 
-## [8. IAM Custom Roles](https://www.cloudskillsboost.google/games/2265/labs/12932)
+## [8. IAM Custom Roles](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.8_IAM-Custom-Roles.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.8_IAM-Custom-Roles.sh
 chmod +x script.sh
@@ -65,7 +65,7 @@ chmod +x script.sh
 
 ```
 
-## [9. User Authentication: Identity-Aware Proxy](https://www.cloudskillsboost.google/games/2265/labs/12933)
+## [9. User Authentication: Identity-Aware Proxy](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.9_User-Authentication-Identity-Aware-Proxy.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.9_User-Authentication-Identity-Aware-Proxy.sh
 chmod +x script.sh
@@ -73,7 +73,7 @@ chmod +x script.sh
 
 ```
 
-## [10. Secure Workloads in Google Kubernetes Engine: Challenge Lab](https://www.cloudskillsboost.google/games/2265/labs/12934)
+## [10. Secure Workloads in Google Kubernetes Engine: Challenge Lab](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.10_Secure-Workloads-in-Google-Kubernetes-Engine-Challenge-Lab.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.10_Secure-Workloads-in-Google-Kubernetes-Engine-Challenge-Lab.sh
 chmod +x script.sh
@@ -81,7 +81,7 @@ chmod +x script.sh
 
 ```
 
-## [11. Prisma Cloud: Securing GKE Run Time](https://www.cloudskillsboost.google/games/2265/labs/12935)
+## [11. Prisma Cloud: Securing GKE Run Time](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.11_Prisma-Cloud-Securing-GKE-Run-Time.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.11_Prisma-Cloud-Securing-GKE-Run-Time.sh
 chmod +x script.sh
@@ -89,7 +89,7 @@ chmod +x script.sh
 
 ```
 
-## [12. Prisma Cloud: Protect your Cloud Instance with Host Defender](https://www.cloudskillsboost.google/games/2265/labs/12936)
+## [12. Prisma Cloud: Protect your Cloud Instance with Host Defender](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.12_Prisma-Cloud-Protect-your-Cloud-Instance-with-Host-Defender.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.12_Prisma-Cloud-Protect-your-Cloud-Instance-with-Host-Defender.sh
 chmod +x script.sh
