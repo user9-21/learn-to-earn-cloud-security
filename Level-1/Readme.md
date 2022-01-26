@@ -35,6 +35,15 @@ chmod +x script.sh
 
 ```
 
+## [5. Securing Google Cloud with CFT Scorecard](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.5_Securing-Google-Cloud-with-CFT-Scorecard.sh)
+```
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.5_Securing-Google-Cloud-with-CFT-Scorecard.sh
+chmod +x script.sh
+./script.sh
+
+```
+## <div align="center"> [OR]() </div>
+
 ## [5. Cloud IDS: Qwik Start](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-1/1.5_Cloud-IDS-Qwik-Start.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-1/1.5_Cloud-IDS-Qwik-Start.sh
