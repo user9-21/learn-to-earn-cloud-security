@@ -24,11 +24,18 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-
+GET_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk '{print $2}' | head -1)
+gcloud config set project $GET_PROJECT_ID
 export ZONE=us-central1-a
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+gsutil mb gs://$BUCKET_NAME/
+echo '#!/bin/bash
+apt-get update
+apt-get install -y -qq install git
+apt-get -y install python-mpltoolkits.basemap' > resources-install-web.sh
 
-gcloud compute instances create myinstance --project=$GOOGLE_CLOUD_PROJECT --zone=$ZONE --scopes=https://www.googleapis.com/auth/cloud-platform 
+gsutil  cp resources-install-web.sh gs://$BUCKET_NAME
+gcloud compute instances create myinstance --project=$GOOGLE_CLOUD_PROJECT --zone=$ZONE --metadata=startup-script-url=gs://$BUCKET_NAME/resources-install-web.sh  --scopes=https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/devstorage.read_only
 
 echo "${GREEN}${BOLD}
 
@@ -79,6 +86,10 @@ echo "${GREEN}${BOLD}
 Task 5 Completed
 
 ${RESET}"
+
+gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes/earthquakes.csv
+gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes/earthquakes.png
+logout
 exit
 
 EOF
@@ -90,7 +101,6 @@ File permission granted to ssh.sh
 
 ${RESET}"
 
-gsutil mb gs://$BUCKET_NAME/
 gcloud compute scp --zone=$ZONE --quiet ssh.sh myinstance:~
 
 echo "${BOLD}${YELLOW}
@@ -116,8 +126,6 @@ Back IN shell
 
 ${RESET}"
 
-gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.htm
-gsutil acl ch -u AllUsers:R gs://$BUCKET_NAME/earthquakes.png
 
 read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
 
