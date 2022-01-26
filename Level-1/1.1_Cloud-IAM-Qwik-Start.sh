@@ -40,8 +40,23 @@ ${RESET}"
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 #export LASTUSER=$(sed -E 's/MEMBERS: //gm;t;d' <<< $(gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.members)' --filter="bindings.members:user:student*" |& tail -1))
 #echo $LASTUSER 
-echo " "
-read -p "${YELLOW}${BOLD}Enter second Email Address : " LASTUSER && echo "${RESET}"
+FIRSTUSER=$(gcloud config get-value core/account)
+LASTUSER=$(gcloud projects get-iam-policy $PROJECT_ID | grep student | awk '{print $2}' | tail -1 | sed -e 's/user://gm;t;d')
+
+if [ $FIRSTUSER = $LASTUSER ]
+then
+LASTUSER=$(gcloud projects get-iam-policy $PROJECT_ID | grep student | awk '{print $2}' | tail -2  | head -1 | sed -e 's/user://gm;t;d')
+echo $LASTUSER
+fi
+
+read -p "${BOLD}${YELLOW}Confirm Your second Email ID =${CYAN} $LASTUSER ${YELLOW}[y/n] : ${RESET}" CONFIRM
+
+if [ $CONFIRM != '[Y/y]' ]
+then
+read -p "${YELLOW}${BOLD}Enter second Email Address : ${RESET}" LASTUSER
+fi
+
+
 
 gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member user:$LASTUSER
 echo "${GREEN}${BOLD}
@@ -57,10 +72,10 @@ Task 3 Completed
 
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
