@@ -79,9 +79,10 @@ Task 3 Completed
 
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
+
 read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
+while [ $CONSENT_REMOVE != 'y' ];
 do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
