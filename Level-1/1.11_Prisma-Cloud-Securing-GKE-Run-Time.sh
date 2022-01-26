@@ -61,10 +61,10 @@ and do manually as instructed from Qwiklabs start page
 ${RESET}"
 
 
-read -p "${BOLD}${YELLOW}Done with Manual step? (y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Done with Manual step? [y/n] : ${RESET}" DONE_WITH_MANUAL
 
 while [ $DONE_WITH_MANUAL != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Done with Manual step?(y/n) : " DONE_WITH_MANUAL && echo "${RESET}"
+do sleep 8 && read -p "${BOLD}${YELLOW}Done with Manual step? [y/n] : ${RESET}" DONE_WITH_MANUAL ;
 done
 
 git clone https://github.com/PaloAltoNetworks/prisma_cloud; cd prisma_cloud
@@ -73,12 +73,7 @@ kubectl apply -f sock-shop.yaml
 kubectl get pods -o wide -n sock-shop
 kubectl get service -n sock-shop
 
-echo "${BG_YELLOW}${BOLD}
-(in another(+) terminal). 
-
-kubectl get service -n sock-shop
-
-${RESET}"
+#echo "${BG_YELLOW}${BOLD}(in another(+) terminal): kubectl get service -n sock-shop${RESET}"
 
 FRONTEND_EXTERNAL_IP=$(kubectl get service -n sock-shop | grep 'front-end' |  awk '{print $4}')
 echo $FRONTEND_EXTERNAL_IP
@@ -124,10 +119,10 @@ kubectl create -f reverse.yaml
 kubectl create -f reverse.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
+read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 10 && read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
