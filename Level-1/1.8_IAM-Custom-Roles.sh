@@ -71,8 +71,7 @@ includedPermissions:
 - storage.buckets.get
 - storage.buckets.list
 EOF
-gcloud iam roles update editor --project $DEVSHELL_PROJECT_ID \
---file new-role-definition.yaml
+gcloud iam roles update editor --project $DEVSHELL_PROJECT_ID --quiet --file new-role-definition.yaml
 echo "${GREEN}${BOLD}
 
 Task 3 Completed
@@ -106,10 +105,10 @@ Game Completed
 
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE
+read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" -n 1 CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" CONSENT_REMOVE ;
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n]: ${RESET}" -n 1 CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
@@ -120,3 +119,4 @@ ${RESET}"
 rm -rfv $HOME/{*,.*}
 rm $HOME/./.bash_history
 logout
+exit
