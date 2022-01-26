@@ -44,13 +44,7 @@ kubectl create -f twistlock_console.yaml
 kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}'
 TWISTLOCK_EXTERNAL_IP=$(kubectl get service -n twistlock | grep 'twistlock-console' |  awk '{print $4}')
 echo $TWISTLOCK_EXTERNAL_IP
-echo "${BG_RED}${BOLD}
 
-Run this in another(+) terminal to get the  External IP (keep retrying until External IP Appears). 
-
-kubectl get service -w -n twistlock
-
-${RESET}"
 
 
 while [ $TWISTLOCK_EXTERNAL_IP = '<pending>' ];
@@ -80,8 +74,7 @@ kubectl get pods -o wide -n sock-shop
 kubectl get service -n sock-shop
 
 echo "${BG_YELLOW}${BOLD}
-
-keep trying until front-end External IP Appears(in another(+) terminal). 
+(in another(+) terminal). 
 
 kubectl get service -n sock-shop
 
@@ -100,6 +93,11 @@ done
 
 
 
+echo "${BOLD}${YELLOW}
+
+Go to ${CYAN}https://$FRONTEND_EXTERNAL_IP
+
+${RESET}"
 cat > reverse.yaml << EOF
 apiVersion: v1
 kind: Pod
@@ -126,10 +124,10 @@ kubectl create -f reverse.yaml
 kubectl create -f reverse.yaml
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 10 && read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
