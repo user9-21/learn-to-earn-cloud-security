@@ -26,7 +26,8 @@ Starting Execution
 ${RESET}"
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 gsutil mb gs://$BUCKET_NAME/
-wget --output-document sample.txt https://www.cloudskillsboost.google/
+#wget --output-document sample.txt https://www.cloudskillsboost.google/
+touch sample.txt
 gsutil cp sample.txt gs://$BUCKET_NAME
 
 
@@ -80,10 +81,10 @@ Task 3 Completed
 ${RESET}"
 #-----------------------------------------------------end----------------------------------------------------------#
 
-read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
+read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" -n 1 CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" -n 1 CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
