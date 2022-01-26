@@ -43,16 +43,14 @@ SECOND_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk
 if [ $PROJECT_ID = $SECOND_PROJECT_ID ]
 then
 SECOND_PROJECT_ID=$(gcloud projects list | grep 'PROJECT_ID: qwiklabs-gcp' | awk '{print $2}' | tail -1)
+echo tailed
 echo $SECOND_PROJECT_ID
 fi
 
-#echo "${BOLD}${YELLOW}Your second Project ID :${CYAN} $SECOND_PROJECT_ID ${RESET}"
-read -p "${BOLD}${YELLOW}Confirm Your second Project ID =${CYAN} $SECOND_PROJECT_ID ${YELLOW}[y/n] : ${RESET}" CONFIRM
+echo "${BOLD}${YELLOW}Your second Project ID =${CYAN} $SECOND_PROJECT_ID ${RESET}"
+#read -p "${BOLD}${YELLOW}Confirm Your second Project ID =${CYAN} $SECOND_PROJECT_ID ${YELLOW}[y/n] : ${RESET}" CONFIRM
 
-if [ $CONFIRM != 'y' ]
-then
-read -p "${BOLD}${YELLOW}Enter second Project ID : ${RESET}" SECOND_PROJECT_ID
-fi
+#if [ $CONFIRM != 'y' ]; then read -p "${BOLD}${YELLOW}Enter second Project ID : ${RESET}" SECOND_PROJECT_ID; fi
 
 echo "gcloud config set project $SECOND_PROJECT_ID
 gcloud compute networks create network-b --subnet-mode custom
