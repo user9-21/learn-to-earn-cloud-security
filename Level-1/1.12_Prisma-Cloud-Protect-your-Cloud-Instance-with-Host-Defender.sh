@@ -94,8 +94,15 @@ Now Install DEfender in each instances  as instructed from Qwiklabs start page
 ${RESET}"
 
 export EXTERNAL_IP_KALI=$(gcloud compute instances list --filter='name:kali' --format='value(EXTERNAL_IP)')
+export EXTERNAL_IP_JUICE_SHOP=$(gcloud compute instances list --filter='name:juice-shop' --format='value(EXTERNAL_IP)')
 
-echo "${BOLD}${CYAN}KALI EXTERNAL IP : $EXTERNAL_IP_KALI ${RESET}"
+echo "${BOLD}${YELLOW}juice-shop EXTERNAL IP : ${CYAN}$EXTERNAL_IP_JUICE_SHOP 
+
+${YELLOW}Navigate here ${CYAN} http://$EXTERNAL_IP_JUICE_SHOP ${RESET}"
+
+
+
+echo "${BOLD}${YELLOW}KALI EXTERNAL IP : ${CYAN}$EXTERNAL_IP_KALI ${RESET}"
 
 echo "${BOLD}${YELLOW}
 
@@ -106,10 +113,10 @@ ${RESET}"
 ssh kali@$EXTERNAL_IP_KALI
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
-while [ $CONSENT_REMOVE = n ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -n=1 -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
