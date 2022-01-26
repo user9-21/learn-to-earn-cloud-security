@@ -25,8 +25,8 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-gcloud auth list
-gcloud config list project
+#gcloud auth list
+#gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
@@ -36,30 +36,26 @@ export ZONE=us-east1-b
 
 
 
-USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+#USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 echo " "
-read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : " CUSTOM_SECURITY_ROLE
-read -p "Enter Service Account : " SERVICE_ACCOUNT
-read -p "Enter Cluster name : " CLUSTER_NAME
+read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : ${RESET}" CUSTOM_SECURITY_ROLE
+read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT
+read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME
+echo "${BOLD} "
+echo "${BOLD}${YELLOW}Your Custom Securiy Role :${CYAN} $CUSTOM_SECURITY_ROLE"
+echo "${BOLD}${YELLOW}Your Service Account :${CYAN} $SERVICE_ACCOUNT"
+echo "${BOLD}${YELLOW}Your Cluster name :${CYAN} $CLUSTER_NAME"
 echo "${RESET} "
-echo "${BOLD}${CYAN}Your Custom Securiy Role :$CUSTOM_SECURITY_ROLE  "
-echo "Your Service Account :$SERVICE_ACCOUNT "
-echo "Your Cluster name :$CLUSTER_NAME  ${RESET}"
-echo " "
+
+read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS
+
 #read -p "Verify all details are correct?(y/n):" VERIFY_DETAILS
 
-read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) :" VERIFY_DETAILS && echo "${RESET}"
-
-
 while [ $VERIFY_DETAILS != 'y' ];
-do read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : " CUSTOM_SECURITY_ROLE && read -p "Enter Service Account : " SERVICE_ACCOUNT && read -p "Enter Cluster name : " CLUSTER_NAME && echo " " && echo "${BOLD}${CYAN}Your Custom Securiy Role : $CUSTOM_SECURITY_ROLE" && echo "Your Service Account : $SERVICE_ACCOUNT" && echo "Your Cluster name : $CLUSTER_NAME${RESET}" && read -p "${BOLD}${YELLOW}Verify all details are correct?(y/n) : " VERIFY_DETAILS && echo "${RESET}" ;
+do echo " " && read -p "${BOLD}${YELLOW}Enter Custom Securiy Role : ${RESET}" CUSTOM_SECURITY_ROLE && read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT && read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME && echo "${BOLD} " && echo "${BOLD}${YELLOW}Your Custom Securiy Role :${CYAN} $CUSTOM_SECURITY_ROLE" && echo "${BOLD}${YELLOW}Your Service Account :${CYAN} $SERVICE_ACCOUNT" && echo "${BOLD}${YELLOW}Your Cluster name :${CYAN} $CLUSTER_NAME" && echo "${RESET} " && read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS ;
 done
-
-
-
-
 
 
 cat > role-definition.yaml << EOF
@@ -109,13 +105,7 @@ Task 3 Completed
 ${RESET}"
 
 
-gcloud container clusters create $CLUSTER_NAME --num-nodes 1 --master-ipv4-cidr=172.16.0.64/28 --network orca-build-vpc --subnetwork orca-build-subnet --enable-master-authorized-networks  --master-authorized-networks 192.168.10.2/32 --enable-ip-alias --enable-private-nodes --enable-private-endpoint --service-account $SERVICE_ACCOUNT@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --zone $ZONE
 
-echo "${GREEN}${BOLD}
-
-Task 4 Completed
-
-${RESET}"
 
 cat > orca_jumphost_ssh.sh << EOF
 gcloud container clusters get-credentials $CLUSTER_NAME --internal-ip --zone $ZONE --project $DEVSHELL_PROJECT_ID 
@@ -127,17 +117,25 @@ echo "${GREEN}${BOLD}
 Task 5 Completed
 
 ${RESET}"
-exit
+logout
+
 EOF
 
 chmod +x orca_jumphost_ssh.sh
 echo "${CYAN}${BOLD}
 
-created orca_jumphost_ssh
+created orca_jumphost_ssh.sh
 File permission granted to orca_jumphost_ssh.sh
 
 ${RESET}"
 
+gcloud container clusters create $CLUSTER_NAME --num-nodes 1 --master-ipv4-cidr=172.16.0.64/28 --network orca-build-vpc --subnetwork orca-build-subnet --enable-master-authorized-networks  --master-authorized-networks 192.168.10.2/32 --enable-ip-alias --enable-private-nodes --enable-private-endpoint --service-account $SERVICE_ACCOUNT@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --zone $ZONE
+
+echo "${GREEN}${BOLD}
+
+Task 4 Completed
+
+${RESET}"
 
 gcloud compute scp --zone=$ZONE --quiet orca_jumphost_ssh.sh  orca-jumphost:~
 echo "${BG_RED}${BOLD}
@@ -152,10 +150,10 @@ ${RESET}"
 gcloud compute ssh orca-jumphost --zone $ZONE --quiet
 
 #-----------------------------------------------------end----------------------------------------------------------#
-read -p "${BOLD}${YELLOW}${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE && echo "${RESET}"
+read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 
 while [ $CONSENT_REMOVE != 'y' ];
-do sleep 20 && read -p "${BOLD}${YELLOW}Remove files?(y/n)" CONSENT_REMOVE  && echo "${RESET}";
+do sleep 10 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;
 done
 
 echo "${YELLOW}${BOLD}
