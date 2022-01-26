@@ -46,17 +46,24 @@ LASTUSER=$(gcloud projects get-iam-policy $PROJECT_ID | grep student | awk '{pri
 if [ $FIRSTUSER = $LASTUSER ]
 then
 LASTUSER=$(gcloud projects get-iam-policy $PROJECT_ID | grep student | awk '{print $2}' | tail -2  | head -1 | sed -e 's/user://gm;t;d')
+fi
+
+if [ $FIRSTUSER = $LASTUSER ]
+then
+read -p "${YELLOW}${BOLD}Enter second Email Address : ${RESET}" LASTUSER
 echo $LASTUSER
 fi
 
-read -p "${BOLD}${YELLOW}Confirm Your second Email ID =${CYAN} $LASTUSER ${YELLOW}[y/n] : ${RESET}" CONFIRM
 
-if [ $CONFIRM != 'y' ]
-then
-read -p "${YELLOW}${BOLD}Enter second Email Address : ${RESET}" LASTUSER
-fi
+#read -p "${BOLD}${YELLOW}Confirm Your second Email ID =${CYAN} $LASTUSER ${YELLOW}[y/n] : ${RESET}" CONFIRM
 
+#if [ $CONFIRM != 'y' ] then read -p "${YELLOW}${BOLD}Enter second Email Address : ${RESET}" LASTUSER fi
 
+echo "${BOLD}${YELLOW}
+
+Your second Email ID =${CYAN} $LASTUSER 
+
+${RESET}"
 
 gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member user:$LASTUSER
 echo "${GREEN}${BOLD}
