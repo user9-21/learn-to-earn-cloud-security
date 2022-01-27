@@ -1,3 +1,12 @@
+# Run this first if project is not set 
+```
+PROJECT_ID=$(gcloud projects list | grep qwiklabs-gcp | awk '{print $2}' | tail -1 )
+gcloud config set project $PROJECT_ID
+
+```
+## now Go through desired lab 
+
+
 ## [1. How to Use a Network Policy on Google Kubernetes Engine](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Level-2/2.1_How-to-Use-a-Network-Policy-on-Google-Kubernetes-Engine.sh)
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Level-2/2.1_How-to-Use-a-Network-Policy-on-Google-Kubernetes-Engine.sh
