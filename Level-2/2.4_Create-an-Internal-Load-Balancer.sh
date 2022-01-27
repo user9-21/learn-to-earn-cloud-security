@@ -58,7 +58,11 @@ ${RESET}"
 
 gcloud compute health-checks create tcp my-ilb-health-check --region=us-central1 --port=80
 gcloud compute backend-services create my-ilb --load-balancing-scheme=internal --protocol=tcp --region=us-central1 --health-checks=my-ilb-health-check --health-checks-region=us-central1
-echo "${YELLOW}${BOLD}Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID ${RESET}"
+echo "${YELLOW}${BOLD}
+
+Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
+
+${RESET}"
 
 gcloud compute forwarding-rules create fr-ilb --region=us-central1 --load-balancing-scheme=internal --network=my-internal-app --subnet=subnet-b --address=10.10.30.5 --ip-protocol=TCP --ports=80 --backend-service=my-ilb --backend-service-region=us-central1
 
@@ -104,7 +108,11 @@ ${RESET}"
 
 
 
-echo "${YELLOW}${BOLD}Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID ${RESET}"
+echo "${YELLOW}${BOLD}
+
+Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
+
+${RESET}"
 
 gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-1 --instance-group-zone=us-central1-a
 gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-2 --instance-group-zone=us-central1-b
