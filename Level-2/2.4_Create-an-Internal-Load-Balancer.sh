@@ -60,7 +60,7 @@ gcloud compute health-checks create tcp my-ilb-health-check --region=us-central1
 gcloud compute backend-services create my-ilb --load-balancing-scheme=internal --protocol=tcp --region=us-central1 --health-checks=my-ilb-health-check --health-checks-region=us-central1
 echo "${YELLOW}${BOLD}
 
-Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
+Confirm load balancer is properly Configured -${CYAN} https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
 
 ${RESET}"
 
@@ -73,7 +73,10 @@ Task 2 Completed
 
 ${RESET}"
 
+gcloud compute instance-groups managed create instance-group-1 --base-instance-name=instance-group-1 --template=instance-template-1 --size=1 --zone=us-central1-a
+gcloud beta compute instance-groups managed set-autoscaling "instance-group-1" --zone "us-central1-a" --cool-down-period "45" --max-num-replicas "5" --min-num-replicas "1" --target-cpu-utilization "0.8" --mode "on"
 
+gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-1 --instance-group-zone=us-central1-a
 
 EOF
 chmod +x 2.sh
@@ -90,9 +93,7 @@ gcloud beta compute instance-templates create instance-template-2 --machine-type
 
 tput bold; tput setaf 3 ;echo instance template created; tput sgr0
 
-gcloud compute instance-groups managed create instance-group-1 --base-instance-name=instance-group-1 --template=instance-template-1 --size=1 --zone=us-central1-a
-gcloud beta compute instance-groups managed set-autoscaling "instance-group-1" --zone "us-central1-a" --cool-down-period "45" --max-num-replicas "5" --min-num-replicas "1" --target-cpu-utilization "0.8" --mode "on"
-sleep 5
+
 gcloud compute instance-groups managed create instance-group-2 --base-instance-name=instance-group-2 --template=instance-template-2 --size=1 --zone=us-central1-b
 gcloud beta compute instance-groups managed set-autoscaling "instance-group-2" --zone "us-central1-b" --cool-down-period "45" --max-num-replicas "5" --min-num-replicas "1" --target-cpu-utilization "0.8" --mode "on"
 
@@ -110,11 +111,10 @@ ${RESET}"
 
 echo "${YELLOW}${BOLD}
 
-Confirm load balancer is properly Configured - https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
+Confirm load balancer is properly Configured -${CYAN} https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list?project=$PROJECT_ID 
 
 ${RESET}"
 
-gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-1 --instance-group-zone=us-central1-a
 gcloud compute backend-services add-backend my-ilb --region=us-central1 --instance-group=instance-group-2 --instance-group-zone=us-central1-b
 
 echo "${GREEN}${BOLD}
