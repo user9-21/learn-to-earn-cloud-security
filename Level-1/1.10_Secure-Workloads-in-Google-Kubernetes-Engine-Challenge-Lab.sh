@@ -48,13 +48,25 @@ read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIF
 while [ $VERIFY_DETAILS != 'y' ];
 do echo " " && read -p "${BOLD}${YELLOW}Enter Cluster name : ${RESET}" CLUSTER_NAME && read -p "${BOLD}${YELLOW}Enter Cloud SQL Instance : ${RESET}" SQL_INSTANCE && read -p "${BOLD}${YELLOW}Enter Service Account : ${RESET}" SERVICE_ACCOUNT && echo "${BOLD} " && echo "${YELLOW}Your Cluster name : ${CYAN}$CLUSTER_NAME" && echo "${YELLOW}Your Cloud SQL Instance : ${CYAN}$SQL_INSTANCE" && echo "${YELLOW}Your Service Account : ${CYAN}$SERVICE_ACCOUNT ${RESET}" && echo " " && read -p "${BOLD}${YELLOW}Verify all details are correct? [y/n] : ${RESET}" VERIFY_DETAILS ;
 done
+cat > 2.sh << EOF
+gcloud sql instances create $SQL_INSTANCE --region us-central1
+gcloud sql databases create wordpress -i $SQL_INSTANCE
+gcloud sql users create wordpress --instance $SQL_INSTANCE --host %
+
+
+echo "${GREEN}${BOLD}
+
+Task 2 Completed
+
+${RESET}"
+EOF
+chmod +x 2.sh
 
 echo "${BG_RED}${BOLD}
 
 while Cluster is creating, Run this in another(+) terminal it will also take some time
 
-
-gcloud sql instances create $SQL_INSTANCE --region us-central1
+./2.sh
 
 ${RESET}"
 
@@ -73,34 +85,35 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
-   
-gcloud sql instances create $SQL_INSTANCE --region us-central1
+SQL_STATE=$(gcloud sql instances describe $SQL_INSTANCE --format='value(state)')
+
+if [[ $SQL_STATE != 'RUNNABLE' || $SQL_STATE != 'PENDING_CREATE' ]]; 
+then 
+gcloud sql instances create $SQL_INSTANCE --region us-central1 ; 
+fi
 
 
-read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE
-while [ $VERIFY_SQL_INSTANCE != 'y' ];
-do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE ;
-done
-
-echo "${BOLD}${YELLOW}
-
-Create database 'wordpress' in sql instance manually here:- ${CYAN}https://console.cloud.google.com/sql/instances/$SQL_INSTANCE/databases?project=$PROJECT_ID
-
-${RESET}"
-gcloud sql users create wordpress --instance $SQL_INSTANCE --host %
-
-read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE
-
-while [ $CREATED_DATABASE != 'y' ];
-do sleep 10 && read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE ;
+while [ $SQL_STATE != 'RUNNABLE' ]; 
+do sleep 10 && SQL_STATE=$(gcloud sql instances describe $SQL_INSTANCE --format='value(state)') && echo $SQL_STATE ; 
 done
 
 
-echo "${GREEN}${BOLD}
 
-Task 2 Completed
 
-${RESET}"
+#read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE
+#while [ $VERIFY_SQL_INSTANCE != 'y' ]; do sleep 10 && read -p "${BOLD}${YELLOW}SQL Instance created? [y/n]: ${RESET}" VERIFY_SQL_INSTANCE ; done
+
+
+#echo "${BOLD}${YELLOW}Create database 'wordpress' in sql instance manually here:- ${CYAN}https://console.cloud.google.com/sql/instances/$SQL_INSTANCE/databases?project=$PROJECT_ID${RESET}"
+
+
+
+#read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE
+
+#while [ $CREATED_DATABASE != 'y' ]; do sleep 10 && read -p "${BOLD}${YELLOW}Created Database 'wordpress' ? [y/n]: ${RESET}" CREATED_DATABASE ; done
+
+
+
 gcloud iam service-accounts create $SERVICE_ACCOUNT
 gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudsql.client"
 gcloud iam service-accounts keys create key.json --iam-account=$SERVICE_ACCOUNT@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com
@@ -154,17 +167,15 @@ kubectl create clusterrolebinding cluster-admin-binding \
 sed -i "s#LAB_EMAIL_ADDRESS#$EMAIL#g" issuer.yaml
 sed -i "s#HOST_NAME#$DNS_RECORD#g" ingress.yaml
 curl -o network-policy.yaml https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/files/network-policy.yaml
+
+gcloud services enable binaryauthorization.googleapis.com
+
+kubectl create -f volume.yaml
+
+kubectl apply -f wordpress.yaml
 kubectl apply -f issuer.yaml
 kubectl apply -f ingress.yaml
 kubectl apply -f network-policy.yaml
-gcloud services enable binaryauthorization.googleapis.com
-
-#kubectl create -f volume.yaml
-
-#kubectl apply -f wordpress.yaml
-#kubectl apply -f issuer.yaml
-#kubectl apply -f ingress.yaml
-#kubectl apply -f network-policy.yaml
 
 echo "${GREEN}${BOLD}
 
@@ -199,6 +210,7 @@ https://console.cloud.google.com/security/binary-authorization/policy/edit?proje
    ==> Now Save Policy.
 
   "
+sleep 15
 
 echo " Go here ${CYAN}https://console.cloud.google.com/kubernetes/clusters/details/us-central1-c/$CLUSTER_NAME/details ${YELLOW}and Enable Binary authorization in security section of cluster.
 
