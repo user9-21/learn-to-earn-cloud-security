@@ -107,14 +107,12 @@ ${RESET}"
 cd $HOME
 set -x
 cd gke-network-policy-demo
-gcloud compute scp --quiet bastion_ssh.sh --zone $ZONE gke-demo-bastion:~
+#gcloud compute scp --quiet bastion_ssh.sh --zone $ZONE gke-demo-bastion:~
 
 set +x
 echo "${BG_RED}${BOLD}
 
-Run this in ssh:
-
-./bastion_ssh.sh
+DO MANUALLY FROM LAB PAGE
 
 ${RESET}"
 
