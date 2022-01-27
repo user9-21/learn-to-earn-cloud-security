@@ -117,6 +117,7 @@ Task 3 Completed
 ${RESET}"
 
 echo "${GREEN}"
+
 kubectl create -f volume.yaml
 sed -i "s#INSTANCE_CONNECTION_NAME#$DEVSHELL_PROJECT_ID:us-central1:$SQL_INSTANCE#g" wordpress.yaml
 
@@ -143,6 +144,8 @@ read -p "${YELLOW}${BOLD}Your DNS Record(from above command) : ${RESET}" DNS_REC
 
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.16.0/cert-manager.yaml
 
+export EMAIL=$(gcloud config get-value core/account)
+echo "${CYAN}${BOLD}EMAIL = $EMAIL${RESET}"
 kubectl create clusterrolebinding cluster-admin-binding \
    --clusterrole=cluster-admin \
    --user=$(gcloud config get-value core/account)
@@ -156,12 +159,12 @@ kubectl apply -f ingress.yaml
 kubectl apply -f network-policy.yaml
 gcloud services enable binaryauthorization.googleapis.com
 
-kubectl create -f volume.yaml
+#kubectl create -f volume.yaml
 
-kubectl apply -f wordpress.yaml
-kubectl apply -f issuer.yaml
-kubectl apply -f ingress.yaml
-kubectl apply -f network-policy.yaml
+#kubectl apply -f wordpress.yaml
+#kubectl apply -f issuer.yaml
+#kubectl apply -f ingress.yaml
+#kubectl apply -f network-policy.yaml
 
 echo "${GREEN}${BOLD}
 
