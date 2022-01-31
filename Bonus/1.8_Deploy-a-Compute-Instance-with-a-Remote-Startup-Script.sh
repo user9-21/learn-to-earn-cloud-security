@@ -27,7 +27,7 @@ Starting Execution
 ${RESET}"
 #gcloud auth list
 #gcloud config list project
-export PROJECT_ID=$(gcloud info --format='value(config.project)')
+#export PROJECT_ID=$(gcloud info --format='value(config.project)')
 export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 #export EMAIL=$(gcloud config get-value core/account)
 #gcloud config set compute/region us-central1
@@ -49,11 +49,11 @@ apt-get install -y apache2
 EOF
 
 gsutil  cp remote_script.sh gs://$BUCKET_NAME
-gcloud compute instances create instance  --zone=us-central1-a --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/remote_script.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
+gcloud compute instances create instance-1  --zone=us-central1-a --image-project=debian-cloud --image-family=debian-10 --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/remote_script.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
 
-gcloud compute firewall-rules create allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80,icmp --source-ranges=0.0.0.0/0 --target-tags=http-server
+gcloud compute firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
 
-export EXTERNAL_IP_INSTANCE=$(gcloud compute instances list --filter='name:green' --format='value(EXTERNAL_IP)')
+export EXTERNAL_IP_INSTANCE=$(gcloud compute instances list --filter='name:instance-1' --format='value(EXTERNAL_IP)')
 echo "${YELLOW}${BOLD}
 
 Visit here ${CYAN}http://$EXTERNAL_IP_INSTANCE
