@@ -48,6 +48,8 @@ Task 1 Completed
 ${RESET}"
 
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
+gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
+gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 
 gcloud logging sinks create JobComplete bigquery.googleapis.com/projects/$PROJECT_ID/datasets/bq_logs --log-filter='resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --quiet
 
@@ -121,10 +123,10 @@ Game completed.
 
 ${RESET}"
 echo "${YELLOW}${BOLD}
-If error occured , Do this: 
+If ${RED}error${YELLOW} occured , Do this: 
 
 
-1. Delete JobComplete sink from ${CYAN}https://console.cloud.google.com/logs/router/sink
+1. Delete JobComplete sink from ${CYAN}https://console.cloud.google.com/logs/router?project=$PROJECT_ID
 ${YELLOW}
 2. Visit here -${CYAN} https://console.cloud.google.com/logs/query;query=resource.type%3D%22bigquery_resource%22%20protoPayload.methodName%3D%22jobservice.jobcompleted%22?project=$PROJECT_ID
 ${YELLOW}
