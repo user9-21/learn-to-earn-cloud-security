@@ -1,4 +1,12 @@
 
+# Run this first if project is not set 
+```
+PROJECT_ID=$(gcloud projects list | grep qwiklabs-gcp | awk '{print $2}' | tail -1 )
+gcloud config set project $PROJECT_ID
+
+```
+## now Go through desired lab 
+
 ## [1. Google Kubernetes Engine Security: Binary Authorization](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.1_Google-Kubernetes-Engine-Security-Binary-Authorization.sh) 
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.1_Google-Kubernetes-Engine-Security-Binary-Authorization.sh
@@ -37,9 +45,7 @@ chmod +x script.sh
 
 ## [5. Understanding and Analyzing Your Costs with Google Cloud Billing Reports]() 
 ```
-curl -o script.sh 
-chmod +x script.sh
-./script.sh
+Open the lab & wait for 5 minutes.
 
 ```
 
