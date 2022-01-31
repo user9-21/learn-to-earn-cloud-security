@@ -47,9 +47,9 @@ Task 1 Completed
 
 ${RESET}"
 
+gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 
-gcloud logging sinks create JobComplete bigquery.googleapis.com/projects/$PROJECT_ID/datasets/bq_logs --log-filter='
-resource.type="bigquery_resource" AND protoPayload.methodName="jobservice.jobcompleted"' --quiet
+gcloud logging sinks create JobComplete bigquery.googleapis.com/projects/$PROJECT_ID/datasets/bq_logs --log-filter='resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --quiet
 
 
 echo "${GREEN}${BOLD}
@@ -84,11 +84,9 @@ Task 3 Completed
 
 ${RESET}"
 
-echo "${YELLOW}${BOLD}
-If error in below command , run this QUERY manually here ${CYAN}https://console.cloud.google.com/bigquery?project=$PROJECT_ID
 
-${BG_RED}
-CREATE OR REPLACE VIEW
+echo "
+bq query --use_legacy_sql=false \ 'CREATE OR REPLACE VIEW
   bq_logs.v_querylogs AS
 SELECT
   resource.labels.project_id,
@@ -106,35 +104,14 @@ SELECT
   protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.queryOutputRowCount,
   severity
 FROM
-  `$PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*`
+  '$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*'
 ORDER BY
   startTime
-
-
-${RESET}"
-
-bq query --use_legacy_sql=false \ "CREATE OR REPLACE VIEW
-  bq_logs.v_querylogs AS
-SELECT
-  resource.labels.project_id,
-  protopayload_auditlog.authenticationInfo.principalEmail,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobConfiguration.query.query,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobConfiguration.query.statementType,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatus.error.message,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.startTime,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.endTime,
-  TIMESTAMP_DIFF(protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.endTime,           protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.startTime, MILLISECOND)/1000 AS run_seconds,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.totalProcessedBytes,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.totalSlotMs,
-  ARRAY(SELECT as STRUCT datasetid, tableId FROM UNNEST(protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.referencedTables)) as tables_ref,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.totalTablesProcessed,
-  protopayload_auditlog.servicedata_v1_bigquery.jobCompletedEvent.job.jobStatistics.queryOutputRowCount,
-  severity
-FROM
-  `$PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*`
-ORDER BY
-  startTime
-"
+' " > query.sh
+sed -i "s/'$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*'/`$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*`/g" query.sh
+chmod +x query.sh
+cat query.sh
+./query.sh
 
 echo "${GREEN}${BOLD}
 
@@ -143,6 +120,23 @@ Task 4 Completed.
 Game completed.
 
 ${RESET}"
+echo "${YELLOW}${BOLD}
+If error occured , Do this: 
+
+
+1. Delete JobComplete sink from ${CYAN}https://console.cloud.google.com/logs/router/sink
+${YELLOW}
+2. Visit here -${CYAN} https://console.cloud.google.com/logs/query;query=resource.type%3D%22bigquery_resource%22%20protoPayload.methodName%3D%22jobservice.jobcompleted%22?project=$PROJECT_ID
+${YELLOW}
+3. Visit here -${CYAN}  https://console.cloud.google.com/logs/router/sink;query=resource.type%3D%22bigquery_resource%22%20protoPayload.methodName%3D%22jobservice.jobcompleted%22?project=$PROJECT_ID
+${YELLOW}
+4.Run example queries(from lab page)
+
+5.run last QUERY(from lab page) manually here ${CYAN}https://console.cloud.google.com/bigquery?project=$PROJECT_ID
+
+${RESET}"
+
+
 #-----------------------------------------------------end----------------------------------------------------------#
 read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
 while [ $CONSENT_REMOVE != 'y' ];
