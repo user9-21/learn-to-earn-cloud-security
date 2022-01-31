@@ -75,3 +75,37 @@ chmod +x script.sh
 ./script.sh
 
 ```
+
+## [9. BigQuery Soccer Data Ingestion](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.9_BigQuery-Soccer-Data-Ingestion.sh) 
+```
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.9_BigQuery-Soccer-Data-Ingestion.sh
+chmod +x script.sh
+./script.sh
+
+```
+
+
+## [10. Looker Functions and Operators]() 
+```
+Do it Manually
+
+```
+
+## [11. Exploring Your Ecommerce Dataset with SQL in Google BigQuery](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.11_Exploring-Your-Ecommerce-Dataset-with-SQL-in-Google-BigQuery.sh) 
+```
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.11_Exploring-Your-Ecommerce-Dataset-with-SQL-in-Google-BigQuery.sh
+chmod +x script.sh
+./script.sh
+
+```
+
+
+## [12. Building Demand Forecasting with BigQuery ML](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.12_Building-Demand-Forecasting-with-BigQuery-ML.sh) 
+
+#### do lab maually to get score
+```
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.12_Building-Demand-Forecasting-with-BigQuery-ML.sh
+chmod +x script.sh
+./script.sh
+
+```
