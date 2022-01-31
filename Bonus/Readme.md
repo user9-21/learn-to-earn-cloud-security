@@ -44,9 +44,9 @@ chmod +x script.sh
 ```
 
 
-## [6. Google Cloud Storage - Bucket Lock]() 
+## [6. Google Cloud Storage - Bucket Lock](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.6_Google-Cloud-Storage-Bucket-Lock.sh) 
 ```
-curl -o script.sh 
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.6_Google-Cloud-Storage-Bucket-Lock.sh
 chmod +x script.sh
 ./script.sh
 
@@ -62,9 +62,9 @@ chmod +x script.sh
 ```
 
 
-## [8. Deploy a Compute Instance with a Remote Startup Script]() 
+## [8. Deploy a Compute Instance with a Remote Startup Script](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.8_Deploy-a-Compute-Instance-with-a-Remote-Startup-Script.sh) 
 ```
-curl -o script.sh 
+curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.8_Deploy-a-Compute-Instance-with-a-Remote-Startup-Script.sh
 chmod +x script.sh
 ./script.sh
 
