@@ -25,18 +25,18 @@ echo "${YELLOW}${BOLD}
 Starting Execution 
 
 ${RESET}"
-gcloud auth list
-gcloud config list project
+#gcloud auth list
+#gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
-export BUCKET_NAME=$(gcloud info --format='value(config.project)')
-export EMAIL=$(gcloud config get-value core/account)
+#export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+#export EMAIL=$(gcloud config get-value core/account)
 #gcloud config set compute/region us-central1
 #gcloud config set compute/zone us-central1-a
 export ZONE=us-central1-a
 
 
 
-USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
+#USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
 
