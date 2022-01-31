@@ -46,7 +46,7 @@ echo "${GREEN}${BOLD}
 Task 1 Completed
 
 ${RESET}"
-
+bq query --use_legacy_sql=false \ 'SELECT current_date'
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
