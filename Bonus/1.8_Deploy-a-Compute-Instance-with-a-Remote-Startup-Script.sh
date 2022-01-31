@@ -42,14 +42,14 @@ export ZONE=us-central1-a
 
 
 gsutil mb gs://$BUCKET_NAME/
-cat > remote_script.sh <<EOF
+cat > install-web.sh <<EOF
  #!/bin/bash
 apt-get update
 apt-get install -y apache2
 EOF
 
-gsutil  cp remote_script.sh gs://$BUCKET_NAME
-gcloud compute instances create instance-1  --zone=us-central1-a --image-project=debian-cloud --image-family=debian-10 --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/remote_script.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
+gsutil  cp install-web.sh gs://$BUCKET_NAME
+gcloud compute instances create instance-1  --zone=us-central1-a --image-project=debian-cloud --image-family=debian-10 --tags=http-server --metadata=startup-script-url=gs://$BUCKET_NAME/install-web.sh --scopes=https://www.googleapis.com/auth/devstorage.read_only
 
 gcloud compute firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
 
