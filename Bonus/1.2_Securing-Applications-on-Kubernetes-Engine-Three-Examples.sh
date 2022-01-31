@@ -28,7 +28,7 @@ ${RESET}"
 gcloud auth list
 gcloud config list project
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
-export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+#export BUCKET_NAME=$(gcloud info --format='value(config.project)')
 export EMAIL=$(gcloud config get-value core/account)
 #gcloud config set compute/region us-central1
 #gcloud config set compute/zone us-central1-a
@@ -102,7 +102,8 @@ ${RESET}"
 gcloud compute ssh gke-tutorial-bastion --zone $ZONE --quiet
 
 
-
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
+gcloud container clusters get-credentials gke-security-demo-ss --zone us-central1-a --project $PROJECT_ID
 make teardown
 echo "${GREEN}${BOLD}
 
