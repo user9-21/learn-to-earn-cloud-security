@@ -68,12 +68,26 @@ ${RESET}"
 gsutil retention temp set "gs://$BUCKET/dummy_transactions"
 gsutil rm "gs://$BUCKET/dummy_transactions"
 gsutil retention temp release "gs://$BUCKET/dummy_transactions"
+gsutil retention temp release "gs://$BUCKET/dummy_transactions"
+
+echo "${YELLOW}${BOLD}
+If error in task 4, run this in new terminal:
+
+${BG_RED}
+export BUCKET="$(gcloud config get-value project)"
+gsutil cp gs://cloud-samples-data/storage/bucket-lock/dummy_transactions "gs://$BUCKET/"
+gsutil retention lock "gs://$BUCKET/"
+gsutil retention temp set "gs://$BUCKET/dummy_transactions"
+gsutil rm "gs://$BUCKET/dummy_transactions"
+gsutil retention temp release "gs://$BUCKET/dummy_transactions"
+${RESET}"
 
 echo "${GREEN}${BOLD}
 
 Task 4 Completed
 
 ${RESET}"
+
 
 gsutil rm "gs://$BUCKET/dummy_transactions"
 gsutil retention event-default set "gs://$BUCKET/"
