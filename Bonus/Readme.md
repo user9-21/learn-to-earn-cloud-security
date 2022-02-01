@@ -102,7 +102,9 @@ chmod +x script.sh
 
 ## [12. Building Demand Forecasting with BigQuery ML](https://github.com/user9-21/learn-to-earn-cloud-security/blob/main/Bonus/1.12_Building-Demand-Forecasting-with-BigQuery-ML.sh) 
 
-#### do lab maually to get score
+#### Run query maually to get score - https://console.cloud.google.com/bigquery 
+##### NOTE : Script may throw error
+
 ```
 curl -o script.sh https://raw.githubusercontent.com/user9-21/learn-to-earn-cloud-security/main/Bonus/1.12_Building-Demand-Forecasting-with-BigQuery-ML.sh
 chmod +x script.sh
