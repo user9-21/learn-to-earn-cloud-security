@@ -51,6 +51,25 @@ gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 gcloud logging read 'resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --limit 20 --format json
 
+echo "${YELLOW}${BOLD}
+
+visit both link before proceeding
+
+ ==> Visit here -${CYAN} https://console.cloud.google.com/logs/query;query=resource.type%3D%22bigquery_resource%22%20protoPayload.methodName%3D%22jobservice.jobcompleted%22?project=$PROJECT_ID
+ 
+ ${YELLOW}
+==> Visit here -${CYAN}  https://console.cloud.google.com/logs/router/sink;query=resource.type%3D%22bigquery_resource%22%20protoPayload.methodName%3D%22jobservice.jobcompleted%22?project=$PROJECT_ID
+${YELLOW}
+${RESET}"
+sleep 2
+
+
+read -p "${BOLD}${YELLOW}Proceed? [y/n] : ${RESET}" PROCEED
+while [ $CONSENT_REMOVE != 'y' ];
+do sleep 10 && read -p "${BOLD}${YELLOW}Proceed? [y/n] : ${RESET}" PROCEED ;
+done
+
+
 gcloud logging sinks create JobComplete bigquery.googleapis.com/projects/$PROJECT_ID/datasets/bq_logs --log-filter='resource.type="bigquery_resource" protoPayload.methodName="jobservice.jobcompleted"' --quiet
 
 
@@ -110,8 +129,11 @@ FROM
 ORDER BY
   startTime
 ' " > query.sh
-sed -i "s/'$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*'/`$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*`/g" query.sh
+
 chmod +x query.sh
+sleep 10
+sed -i "s/'$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*'/`$DEVSHELL_PROJECT_ID.bq_logs.cloudaudit_googleapis_com_data_access_*`/g" query.sh
+
 cat query.sh
 ./query.sh
 
@@ -123,7 +145,7 @@ Game completed.
 
 ${RESET}"
 echo "${YELLOW}${BOLD}
-If ${RED}error${YELLOW} occured , Do this: 
+If ${RED}error${YELLOW} occured , Do this Manually: 
 
 
 1. Delete JobComplete sink from ${CYAN}https://console.cloud.google.com/logs/router?project=$PROJECT_ID
