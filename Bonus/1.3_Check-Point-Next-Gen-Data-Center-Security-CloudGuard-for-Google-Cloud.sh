@@ -39,8 +39,8 @@ export ZONE=us-central1-a
 #USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}')
 #----------------------------------------------------code--------------------------------------------------#
 
-gcloud compute networks create vpc-cluster --bgp-routing-mode=regional --subnet-mode=custom
-gcloud compute networks subnets create cluster --network=vpc-cluster --range=192.168.110.0/24 --region=us-central1 --enable-private-ip-google-access
+#gcloud compute networks create vpc-cluster --bgp-routing-mode=regional --subnet-mode=custom
+#gcloud compute networks subnets create cluster --network=vpc-cluster --range=192.168.110.0/24 --region=us-central1 --enable-private-ip-google-access
 gcloud compute networks create vpc-management --bgp-routing-mode=regional --subnet-mode=custom
 gcloud compute networks subnets create management --network=vpc-management --range=192.168.120.0/24 --region=us-central1 --enable-private-ip-google-access
 
@@ -55,15 +55,10 @@ gcloud compute firewall-rules create ingress-prod --action allow --direction=ING
 gcloud compute firewall-rules create rdp-management --action allow --direction=INGRESS --source-ranges=0.0.0.0/0 --network=vpc-management --rules tcp:3389
 
 
-echo "${YELLOW}${BOLD}
-
-
-Go here ${CYAN}https://console.cloud.google.com/marketplace/vm/config/checkpoint-public/check-point-cloudguard-payg?project=$PROJECT_ID ${YELLOW}and configure as described on lab page
-
-${RESET}"
+#echo "${YELLOW}${BOLD}Go here ${CYAN}https://console.cloud.google.com/marketplace/vm/config/checkpoint-public/check-point-cloudguard-payg?project=$PROJECT_ID ${YELLOW}and configure as described on lab page${RESET}"
 #echo "${GREEN}${BOLD}Task 1 Completed${RESET}"
 
-gcloud compute instances add-tags check-point-cloudguard-payg-1-vm --zone $ZONE --tags=http-server,https-server
+#gcloud compute instances add-tags check-point-cloudguard-payg-1-vm --zone $ZONE --tags=http-server,https-server
 
 #https://console.cloud.google.com/compute/metadata?project=$PROJECT_ID&tab=sshkeys
 #gcloud compute project-info describe --format='value(commonInstanceMetadata.ssh-keys)' |  awk '{print $2}'
