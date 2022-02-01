@@ -43,6 +43,9 @@ gcloud compute networks create vpc-cluster --bgp-routing-mode=regional --subnet-
 gcloud compute networks subnets create cluster --network=vpc-cluster --range=192.168.110.0/24 --region=us-central1 --enable-private-ip-google-access
 gcloud compute networks create vpc-management --bgp-routing-mode=regional --subnet-mode=custom
 gcloud compute networks subnets create management --network=vpc-management --range=192.168.120.0/24 --region=us-central1 --enable-private-ip-google-access
+
+gcloud compute instances create rdp-client --zone=us-central1-a  --machine-type=n1-standard-4 --image-project=qwiklabs-resources --image=sap-rdp-image --network=vpc-management --subnet=management --tags=rdp,http-server,https-server --boot-disk-type=pd-ssd
+
 gcloud compute networks create vpc-prod --bgp-routing-mode=regional --subnet-mode=custom
 gcloud compute networks subnets create prod --network=vpc-prod --range=10.0.0.0/24 --region=us-central1
 gcloud compute networks create vpc-qa --bgp-routing-mode=regional --subnet-mode=custom
@@ -58,23 +61,17 @@ echo "${YELLOW}${BOLD}
 Go here ${CYAN}https://console.cloud.google.com/marketplace/vm/config/checkpoint-public/check-point-cloudguard-payg?project=$PROJECT_ID ${YELLOW}and configure as described on lab page
 
 ${RESET}"
+#echo "${GREEN}${BOLD}Task 1 Completed${RESET}"
+
+gcloud compute instances add-tags check-point-cloudguard-payg-1-vm --zone $ZONE --tags=http-server,https-server
+
+#https://console.cloud.google.com/compute/metadata?project=$PROJECT_ID&tab=sshkeys
+#gcloud compute project-info describe --format='value(commonInstanceMetadata.ssh-keys)' |  awk '{print $2}'
+#https://console.cloud.google.com/marketplace/vm/config/checkpoint-public/check-point-ha--byol?project=$PROJECT_ID
+
 echo "${GREEN}${BOLD}
 
 Task 1 Completed
-
-${RESET}"
-
-gcloud compute instances add-tags check-point-cloudguard-payg-1-vm --tags=http-server,https-server
-
-#https://console.cloud.google.com/compute/metadata?project=$PROJECT_ID&tab=sshkeys
-gcloud compute project-info describe --format='value(commonInstanceMetadata.ssh-keys)' |  awk '{print $2}'
-
-#https://console.cloud.google.com/marketplace/vm/config/checkpoint-public/check-point-ha--byol?project=$PROJECT_ID
-
-gcloud compute instances create rdp-client --zone=us-central1-a  --machine-type=n1-standard-4 --image-project=qwiklabs-resources --image=sap-rdp-image --network=vpc-management --subnet=management --tags=rdp,http-server,https-server --boot-disk-type=pd-ssd
-echo "${GREEN}${BOLD}
-
-Task 2 Completed
 
 ${RESET}"
 gcloud compute instances create linux-qa --zone us-central1-a --image-project=debian-cloud --image=debian-9-stretch-v20191210 --custom-cpu 1 --custom-memory 4 --network-interface subnet=qa,private-network-ip=10.0.1.4,no-address --metadata startup-script="\#! /bin/bash
@@ -85,7 +82,7 @@ useradd -m -p sa1trmaMoZ25A cp
 EOF"
 echo "${GREEN}${BOLD}
 
-Task 3 Completed.
+Task 2 Completed.
 
 Game Completed.
 
